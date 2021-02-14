@@ -1,0 +1,95 @@
+entity yks {
+    in diploma_notu[50.0..100.0].
+    in daha_once_yerlesti.
+
+    ek_puan := (diploma_notu * 5.0) * (daha_once_yerlesti ? 0.06 : 0.12).
+
+    entity tyt {
+
+        entity tyt_turkce {
+            in dogru[0..40].
+            in yanlis[0..40].
+
+            out  tyt_turkce_net := dogru - yanlis * 0.25 given dogru + yanlis <= 40.
+        }
+
+        entity tyt_matematik {
+            in dogru[0..40].
+            in yanlis[0..40].
+
+            out tyt_matematik_net := dogru - yanlis * 0.25 given dogru + yanlis <= 40.
+        }
+
+        entity tyt_fen {
+            in dogru[0..20].
+            in yanlis[0..20].
+
+            out tyt_fen_net := dogru - yanlis * 0.25 given dogru + yanlis <= 20.
+        }
+
+        entity tyt_sosyal {
+            in dogru [0..20].
+            in yanlis[0..20].
+
+            out  tyt_sosyal_net := dogru - yanlis * 0.25 given dogru + yanlis <= 20.
+        }
+    }
+
+    entity ayt {
+
+        entity ayt_edsos1 {
+            in dogru[0..40].
+            in yanlis[0..40].
+
+            out ayt_edsos1_net := dogru - yanlis * 0.25 given dogru + yanlis <= 40.
+        }
+
+        entity ayt_sosyal2 {
+            in dogru[0..40].
+            in yanlis[0..40].
+
+            out  ayt_sosyal2_net := dogru - yanlis * 0.25 given dogru + yanlis <= 40.
+        }
+
+        entity ayt_matematik {
+            in dogru[0..40].
+            in yanlis[0..40].
+
+            out  ayt_matematik_net := dogru - yanlis * 0.25 given dogru + yanlis <= 40.
+        }
+
+        entity ayt_fen {
+            in dogru[0..40].
+            in yanlis[0..40].
+
+            out  ayt_fen_net := dogru - yanlis * 0.25 given dogru + yanlis <= 40.
+        }
+    }
+
+    entity ydt {
+        entity yabanci_dil {
+            in dogru[0..80].
+            in yanlis[0..80].
+
+            out  yabanci_dil_net := dogru - yanlis * 0.25 given dogru + yanlis <= 80.
+        }
+    }
+
+    out tyt_net := tyt_turkce_net + tyt_matematik_net + tyt_sosyal_net + tyt_fen_net given tyt_turkce_net >= 0.5 && tyt_matematik_net >= 0.5.
+    out say_net := ayt_matematik_net + ayt_fen_net    given ayt_matematik_net >= 0.5 && ayt_fen_net     >= 0.5.
+    out ea_net  := ayt_matematik_net + ayt_edsos1_net given ayt_matematik_net >= 0.5 && ayt_edsos1_net  >= 0.5.
+    out soz_net := ayt_edsos1_net + ayt_sosyal2_net   given ayt_edsos1_net    >= 0.5 && ayt_sosyal2_net >= 0.5.
+    out dil_net := yabanci_dil_net given yabanci_dil_net >= 0.5.
+
+    out tyt_ham := 100.0 + (tyt_net * 400.0 / 120.0).
+    out say_ham := ((tyt_ham - 100.0) * 0.4 + (say_net * 5.0) * 0.6) + 100.0.
+    out ea_ham  := ((tyt_ham - 100.0) * 0.4 + (ea_net * 5.0) * 0.6) + 100.0.
+    out soz_ham := ((tyt_ham - 100.0) * 0.4 + (soz_net * 5.0) * 0.6) + 100.0.
+    out dil_ham := ((tyt_ham - 100.0) * 0.4 + (dil_net * 5.0) * 0.6) + 100.0.
+
+    out tyt_yerlestirme := tyt_ham + ek_puan.
+    out say_yerlestirme := say_ham + ek_puan.
+    out ea_yerlestirme := ea_ham + ek_puan.
+    out soz_yerlestirme := soz_ham + ek_puan.
+    out dil_yerlestirme := dil_ham + ek_puan.
+}
