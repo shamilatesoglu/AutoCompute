@@ -1,3 +1,16 @@
+
+
+compute yks {
+   tyt::turkce::dogru       << 35.
+   tyt::turkce::yanlis      << 3.
+   tyt::matematik::dogru    << 31.
+   tyt::matematik::yanlis   << 1.
+   tyt::sosyal::dogru       << 15.
+   tyt::sosyal::yanlis      << 3.
+   tyt::fen::dogru          << 19.
+   tyt::fen::yanlis         << 0.
+}.
+
 entity yks {
     title: "YÜKSEKÖĞRETİM KURUMLARI SINAVI".
     abbreviation: "YKS".
@@ -126,7 +139,7 @@ entity yks {
     out soz_net := ayt::edsos1::net    + ayt::sosyal2::net  given { ayt::edsos1::net    >= 0.5 && ayt::sosyal2::net >= 0.5. }.
     out dil_net := ydt::yabanci_dil::net                    given { ydt::yabanci_dil::net >= 0.5. }.
 
-    out tyt_ham := 100.0 + (tyt_net * 400.0 / 120.0).
+    out tyt_ham := 100.0 + (tyt::net * 400.0 / 120.0).
     out say_ham := ((tyt_ham - 100.0) * 0.4 + (say_net * 5.0) * 0.6) + 100.0.
     out ea_ham  := ((tyt_ham - 100.0) * 0.4 + (ea_net * 5.0) * 0.6) + 100.0.
     out soz_ham := ((tyt_ham - 100.0) * 0.4 + (soz_net * 5.0) * 0.6) + 100.0.
@@ -138,14 +151,3 @@ entity yks {
     out soz_yerlestirme := soz_ham + ek_puan.
     out dil_yerlestirme := dil_ham + ek_puan.
 }
-
-compute yks {
-   tyt::turkce::dogru       << 35.
-   tyt::turkce::yanlis      << 3.
-   tyt::matematik::dogru    << 31.
-   tyt::matematik::yanlis   << 1.
-   tyt::sosyal::dogru       << 15.
-   tyt::sosyal::yanlis      << 3.
-   tyt::fen::dogru          << 19.
-   tyt::fen::yanlis         << 0.
-}.

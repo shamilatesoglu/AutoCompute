@@ -2,7 +2,7 @@
 grammar Unnamed;
 
 compilationUnit
-    :  (entityDefinition)* (computeCall)* EOF
+    :  (entityDefinition)* (computeCall)* (entityDefinition)*  EOF
     ;
 
 entityDefinition
