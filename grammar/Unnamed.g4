@@ -10,7 +10,7 @@ entityDefinition
     ;
 
 entityBody
-    : (constraintsDefinition)* (propertyDefinition)* (inputDeclaration)* (localVariableDefinition)* (entityDefinition)* (outputDefinition)*
+    : (propertyDefinition)* (constraintsDefinition)* (inputDeclaration)* (localVariableDefinition)* (entityDefinition)* (outputDefinition)*
     ;
 
 propertyDefinition

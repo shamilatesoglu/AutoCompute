@@ -1,4 +1,6 @@
 entity yks {
+    title: "YÜKSEKÖĞRETİM KURUMLARI SINAVI".
+    abbreviation: "YKS".
 
     constraints test_20_constraint_set  {
         dogru >= 0 && dogru <= 20, "Doğru sayısı en az 0 en çok 20 olabilir".
@@ -25,6 +27,8 @@ entity yks {
     ek_puan := (diploma_notu * 5.0) * (daha_once_yerlesti ? 0.06 : 0.12).
 
     entity tyt {
+        title: "TEMEL YETERLİLİK SINAVI".
+        abbreviation: "TYT".
 
         entity turkce {
             in dogru.
@@ -61,6 +65,8 @@ entity yks {
     }
 
     entity ayt {
+        title: "ALAN YETERLİLİK TESTİ".
+        abbreviation: "AYT".
 
         entity edsos1 {
             title: "EDEBİYAT-SOSYAL BİLİMLER 1".
@@ -102,7 +108,12 @@ entity yks {
     }
 
     entity ydt {
+        title: "YABANCI DİL TESTİ".
+        abbreviation: "YDT".
+
         entity yabanci_dil {
+            title: "YABANCI DİL".
+
             in dogru.
             in yanlis.
 
@@ -137,4 +148,4 @@ compute yks {
    tyt::sosyal::yanlis      << 3.
    tyt::fen::dogru          << 19.
    tyt::fen::yanlis         << 0.
-}
+}.
