@@ -1,31 +1,110 @@
 package msa.language.unnamed.ds;
 
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DirectedGraph<V> implements Graph<V> {
 
-    protected HashMap<V, LinkedHashSet<V>> adj;
+    protected Map<V, LinkedHashSet<V>> adj;
 
     protected V origin;
-
-    protected Graph<V> reference;
 
     public DirectedGraph() {
         this(null);
     }
 
     public DirectedGraph(V origin) {
-        adj = new HashMap<>();
+        adj = new LinkedHashMap<>();
         addVertex(origin);
-        reference = this;
+    }
+
+    public List<Set<V>> getStronglyConnectedComponents() {
+        List<Set<V>> stronglyConnectedComponents = new ArrayList<>();
+
+        AtomicInteger index = new AtomicInteger();
+
+        Stack<TarjanVertexWrapper<V>> S = new Stack<>();
+
+        List<TarjanVertexWrapper<V>> vertices = new ArrayList<>();
+        for (V vertex : adj.keySet()) {
+            vertices.add(new TarjanVertexWrapper<>(vertex));
+
+        }
+
+        List<Edge<V>> edges = new LinkedList<>();
+
+        for (TarjanVertexWrapper<V> v : vertices) {
+            for (TarjanVertexWrapper<V> w : vertices) {
+                if (isAdjacent(v.v, w.v)) edges.add(new Edge<>(v, w));
+            }
+        }
+
+        for (TarjanVertexWrapper<V> vertex : vertices) {
+            if (vertex.index == TarjanVertexWrapper.UNDEFINED) {
+                strongConnect(vertex, index, edges, S, stronglyConnectedComponents);
+            }
+        }
+
+        return stronglyConnectedComponents;
+    }
+
+    private void strongConnect(TarjanVertexWrapper<V> v, AtomicInteger index, List<Edge<V>> edges,
+                               Stack<TarjanVertexWrapper<V>> S, List<Set<V>> stronglyConnectedComponents) {
+        v.index = index.get();
+        v.lowLink = index.getAndIncrement();
+        S.push(v);
+        v.onStack = true;
+
+        for (Edge<V> edge : edges) {
+            if (edge.w.index == TarjanVertexWrapper.UNDEFINED) {
+                // Successor w has not yet been visited; recurse on it
+                strongConnect(edge.w, index, edges, S, stronglyConnectedComponents);
+                edge.v.lowLink = Math.min(edge.v.lowLink, edge.w.lowLink);
+            } else if (edge.w.onStack) {
+                // Successor w is in stack S and hence in the current SCC
+                // If w is not on stack, then (v, w) is an edge pointing to an SCC already found and must be ignored
+                // Note: The next line may look odd - but is correct.
+                // It says w.index not w.lowlink; that is deliberate and from the original paper
+                edge.v.lowLink= Math.min(edge.v.lowLink, edge.w.index);
+            }
+        }
+
+        if (v.lowLink == v.index) {
+            Set<V> stronglyConnectedComponent = new LinkedHashSet<>();
+            while(!S.isEmpty()) {
+                TarjanVertexWrapper<V> w = S.pop();
+                w.onStack = false;
+                stronglyConnectedComponent.add(w.v);
+                if (w.v.equals(v.v)) break;
+            }
+            stronglyConnectedComponents.add(stronglyConnectedComponent);
+        }
+    }
+
+    private static class TarjanVertexWrapper<V> {
+        private static final int UNDEFINED = -1;
+
+        final V v;
+        int lowLink;
+        int index;
+        boolean onStack;
+
+        TarjanVertexWrapper(V vertex) {
+            this.v = vertex;
+            index = UNDEFINED;
+        }
+    }
+
+    private static class Edge<V> {
+        TarjanVertexWrapper<V> v;
+        TarjanVertexWrapper<V> w;
+
+        public Edge(TarjanVertexWrapper<V> v, TarjanVertexWrapper<V> w) {
+            this.v = v;
+            this.w = w;
+        }
+    }
     }
 
     @Override
@@ -159,37 +238,6 @@ public class DirectedGraph<V> implements Graph<V> {
     }
 
     @Override
-    public Iterator<V> iterator() {
-        return new TopologicalOrderTraversal().iterator();
-    }
+    public Iterator<V> iterator() { return null; }
 
-    /**
-     * Assumes the graph is a directed acyclic graph.
-     * TODO: Implement DirectedAcyclicGraph and use this there.
-     */
-    private class TopologicalOrderTraversal implements Iterable<V> {
-        private HashMap<V, Boolean> visited;
-        private LinkedList<V> reversePostOrder;
-
-        public TopologicalOrderTraversal() {
-            reversePostOrder = new LinkedList<>();
-            visited = new HashMap<>(getNumberOfVertices(), 2);
-            for (V v : vertices())
-                visited.put(v, false);
-            for (V v : vertices())
-                if (!visited.get(v)) dfs(v);
-        }
-
-        private void dfs(V v) {
-            visited.put(v, true);
-            for (V w : reference.adjacentVertices(v))
-                if (!visited.get(w)) dfs(w);
-            reversePostOrder.push(v);
-        }
-
-        @Override
-        public Iterator<V> iterator() {
-            return reversePostOrder.iterator();
-        }
-    }
 }
