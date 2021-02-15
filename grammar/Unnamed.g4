@@ -10,7 +10,11 @@ entityDefinition
     ;
 
 entityBody
-    : (inputDeclaration)* (localVariableDefinition)* (entityDefinition)* (outputDefinition)*
+    : (constraintsDefinition)* (propertyDefinition)* (inputDeclaration)* (localVariableDefinition)* (entityDefinition)* (outputDefinition)*
+    ;
+
+propertyDefinition
+    : identifier=ID COLON value=(STRING_LITERAL|NUM) DOT
     ;
 
 inputDeclaration
@@ -18,15 +22,24 @@ inputDeclaration
     ;
 
 localVariableDefinition
-    : identifier=ID ASSIGN expression (constraint)? DOT
+    : identifier=ID ASSIGN expression (given)? DOT
     ;
 
 outputDefinition
-    : OUT identifier=ID ASSIGN expression (constraint)? DOT
+    : OUT identifier=ID ASSIGN expression (given)? DOT
+    ;
+
+given
+    : GIVEN LCURLY (constraint)* RCURLY
+    | GIVEN identifier=ID
     ;
 
 constraint
-    : GIVEN expression
+    : expression (COMMA rationale=STRING_LITERAL)? DOT
+    ;
+
+constraintsDefinition
+    : CONSTRAINTS identifier=ID LCURLY (constraint)* RCURLY DOT
     ;
 
 rangeExpression
@@ -44,11 +57,15 @@ expression
     |   value=(NUM|BOOLEAN_LITERAL)                                                             # numberExpression
     ;
 
+STRING_LITERAL: '"' ( ESC | ~[\\"\r\n] )* '"';
+
+fragment ESC : '\\"' | '\\\\' ;
 
 IN      : ('i'|'I')('n'|'N');
 OUT     : ('o'|'O')('u'|'U')('t'|'T');
 ENTITY  : ('e'|'E')('n'|'N')('t'|'T')('i'|'I')('t'|'T')('y'|'Y');
 GIVEN   : ('g'|'G')('i'|'I')('v'|'V')('e'|'E')('n'|'N');
+CONSTRAINTS : ('c'|'C')('o'|'O')('n'|'N')('s'|'S')('t'|'T')('r'|'R')('a'|'A')('i'|'I')('n'|'N')('t'|'T')('s'|'S');
 
 DOT     : '.';
 DOTDOT  : '..';
@@ -57,6 +74,8 @@ LCURLY  : '{';
 RCURLY  : '}';
 LBRACKET  : '[';
 RBRACKET  : ']';
+COMMA   : ',';
+COLON   : ':';
 
 BOOLEAN_LITERAL
     : TRUE
@@ -81,8 +100,16 @@ OPERATOR_LTEQ: '<=';
 
 NUM :   [0-9]+ ('.' [0-9]+)? ([eE] [+-]? [0-9]+)?;
 ID  :   [a-zA-Z_0-9]+;
+
 WS  :   [ \t\r\n] -> channel(HIDDEN);
 
+COMMENT
+    : '/*' .*? '*/' -> skip
+;
+
+LINE_COMMENT
+    : '//' ~[\r\n]* -> skip
+;
 
 
 /*
