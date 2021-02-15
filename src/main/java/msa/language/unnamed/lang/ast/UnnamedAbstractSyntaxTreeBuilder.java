@@ -5,6 +5,7 @@ import msa.language.unnamed.lang.cst.UnnamedBaseVisitor;
 import msa.language.unnamed.lang.cst.UnnamedLexer;
 import msa.language.unnamed.lang.cst.UnnamedParser;
 
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<UnnamedAbstractSyntaxTreeNode> {
@@ -24,12 +25,24 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
     public UnnamedAbstractSyntaxTreeNode visitEntityBody(UnnamedParser.EntityBodyContext ctx) {
         EntityBodyASTNode entityBodyASTNode = new EntityBodyASTNode();
 
+        entityBodyASTNode.getProperties().addAll(ctx.propertyDefinition()
+                .stream().map(propertyDefinitionCtx -> (PropertyASTNode) visitPropertyDefinition(propertyDefinitionCtx))
+                .collect(Collectors.toList()));
+
+        entityBodyASTNode.getConstraintSets().addAll(ctx.constraintsDefinition()
+                .stream().map(constraintsDefinitionCtx -> (ConstraintSetASTNode) visitConstraintsDefinition(constraintsDefinitionCtx))
+                .collect(Collectors.toList()));
+
         entityBodyASTNode.getInputs().addAll(ctx.inputDeclaration()
                 .stream().map(inputDeclarationCtx -> (InputDeclarationASTNode) visitInputDeclaration(inputDeclarationCtx))
                 .collect(Collectors.toList()));
 
         entityBodyASTNode.getLocals().addAll(ctx.localVariableDefinition()
                 .stream().map(variableDeclarationCtx -> (VariableDefinitionASTNode) visitLocalVariableDefinition(variableDeclarationCtx))
+                .collect(Collectors.toList()));
+
+        entityBodyASTNode.getEntities().addAll(ctx.entityDefinition()
+                .stream().map(entityDefinitionCtx -> (EntityASTNode) visitEntityDefinition(entityDefinitionCtx))
                 .collect(Collectors.toList()));
 
         entityBodyASTNode.getOutputs().addAll(ctx.outputDefinition()
@@ -49,7 +62,7 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
         return new LocalVariableDefinitionASTNode(
                 ctx.identifier.getText(),
                 (ExpressionASTNode) visit(ctx.expression()),
-                (ConstraintASTNode) visitConstraint(ctx.constraint()));
+                (GivenASTNode) visitGiven(ctx.given()));
     }
 
     @Override
@@ -57,14 +70,47 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
         return new OutputDefinitionASTNode(
                 ctx.identifier.getText(),
                 (ExpressionASTNode) visit(ctx.expression()),
-                (ConstraintASTNode) visitConstraint(ctx.constraint())
+                (GivenASTNode) visitGiven(ctx.given())
         );
     }
 
     @Override
+    public UnnamedAbstractSyntaxTreeNode visitConstraintsDefinition(UnnamedParser.ConstraintsDefinitionContext ctx) {
+        ConstraintSetASTNode node = new ConstraintSetASTNode(ctx.identifier.getText());
+
+        node.getConstraints().addAll(ctx.constraint().stream()
+                .map(constraintContext -> (ConstraintASTNode) visitConstraint(constraintContext))
+                .collect(Collectors.toList()));
+
+        return node;
+    }
+
+    @Override
+    public UnnamedAbstractSyntaxTreeNode visitPropertyDefinition(UnnamedParser.PropertyDefinitionContext ctx) {
+        String text =  ctx.value.getText();
+        Object value;
+        if (text.startsWith("\""))
+            value = text.substring(1, text.length()-1);
+        else
+            value = Double.parseDouble(text);
+
+        PropertyASTNode node = new PropertyASTNode(ctx.identifier.getText(), value);
+        return node;
+    }
+
+    @Override
+    public UnnamedAbstractSyntaxTreeNode visitGiven(UnnamedParser.GivenContext ctx) {
+        GivenASTNode node = new GivenASTNode();
+        if (ctx != null)
+            node.getConstraints().addAll(ctx.constraint()
+                    .stream().map(constraintCtx -> (ConstraintASTNode) visitConstraint(constraintCtx))
+                    .collect(Collectors.toList()));
+        return node;
+    }
+
+    @Override
     public UnnamedAbstractSyntaxTreeNode visitConstraint(UnnamedParser.ConstraintContext ctx) {
-        if (ctx == null) return null;
-        return new ConstraintASTNode((ExpressionASTNode) visit(ctx.expression()));
+        return new ConstraintASTNode((ExpressionASTNode) visit(ctx.expression()), ctx.rationale != null ? ctx.rationale.getText() : null);
     }
 
     @Override

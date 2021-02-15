@@ -16,4 +16,8 @@ public class EntityASTNode extends UnnamedAbstractSyntaxTreeNode {
     public void setBlockASTNode(EntityBodyASTNode entityBodyASTNode) {
         this.entityBodyASTNode = entityBodyASTNode;
     }
+
+    public String getId() {
+        return id;
+    }
 }

@@ -4,19 +4,19 @@ public class VariableDefinitionASTNode extends IdentifiableASTNode {
 
     private final ExpressionASTNode expressionASTNode;
 
-    private final ConstraintASTNode constraintASTNode;
+    private final GivenASTNode givenASTNode;
 
-    public VariableDefinitionASTNode(String name, ExpressionASTNode expressionASTNode, ConstraintASTNode constraintASTNode) {
+    public VariableDefinitionASTNode(String name, ExpressionASTNode expressionASTNode, GivenASTNode givenASTNode) {
         super(name);
         this.expressionASTNode = expressionASTNode;
-        this.constraintASTNode = constraintASTNode;
+        this.givenASTNode = givenASTNode;
     }
 
     public ExpressionASTNode getExpressionASTNode() {
         return expressionASTNode;
     }
 
-    public ConstraintASTNode getConstraintASTNode() {
-        return constraintASTNode;
+    public GivenASTNode getGivenASTNode() {
+        return givenASTNode;
     }
 }
