@@ -1,17 +1,12 @@
 package msa.language.unnamed.lang.ast.node;
 
-public class InputDefinitionASTNode extends UnnamedAbstractSyntaxTreeNode {
-    private final ReferencingASTNode reference;
+public class InputDefinitionASTNode extends IdentifiableASTNode {
 
     private final ExpressionASTNode value;
 
-    public InputDefinitionASTNode(ReferencingASTNode reference, ExpressionASTNode value) {
-        this.reference = reference;
+    public InputDefinitionASTNode(String reference, ExpressionASTNode value) {
+        super(reference);
         this.value = value;
-    }
-
-    public ReferencingASTNode getReference() {
-        return reference;
     }
 
     public ExpressionASTNode getExpression() {

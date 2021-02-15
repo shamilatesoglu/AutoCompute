@@ -69,7 +69,7 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
 
     @Override
     public UnnamedAbstractSyntaxTreeNode visitLocalVariableDefinition(UnnamedParser.LocalVariableDefinitionContext ctx) {
-        return new LocalVariableDefinitionASTNode(
+        return new VariableDefinitionASTNode(
                 ctx.identifier.getText(),
                 (ExpressionASTNode) visit(ctx.expression()),
                 (GivenASTNode) visitGiven(ctx.given()));
@@ -190,7 +190,7 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
 
     @Override
     public UnnamedAbstractSyntaxTreeNode visitInputDefinition(UnnamedParser.InputDefinitionContext ctx) {
-        return new InputDefinitionASTNode((ReferencingASTNode) visitReference(ctx.reference()), (ExpressionASTNode) visit(ctx.expression()));
+        return new InputDefinitionASTNode(ctx.reference().getText(), (ExpressionASTNode) visit(ctx.expression()));
     }
 
     @Override

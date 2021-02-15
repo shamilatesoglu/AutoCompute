@@ -9,6 +9,7 @@ public class InterpreterTest {
 
         String source = FileUtils.readString("grammar/yks.txt");
 
-        UnnamedInterpreter.getInstance().interpret(source);
+        UnnamedInterpreter interpreter = new UnnamedInterpreter();
+        interpreter.interpret(source);
     }
 }

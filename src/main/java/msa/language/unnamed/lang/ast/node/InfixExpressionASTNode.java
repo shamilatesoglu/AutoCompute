@@ -11,4 +11,16 @@ public class InfixExpressionASTNode extends ExpressionASTNode {
         this.operator = operator;
         this.right = right;
     }
+
+    public UnnamedAbstractSyntaxTreeNode getLeft() {
+        return left;
+    }
+
+    public UnnamedAbstractSyntaxTreeNode getRight() {
+        return right;
+    }
+
+    public int getOperator() {
+        return operator;
+    }
 }
