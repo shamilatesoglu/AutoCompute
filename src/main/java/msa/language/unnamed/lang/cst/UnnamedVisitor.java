@@ -77,6 +77,24 @@ public interface UnnamedVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRangeExpression(UnnamedParser.RangeExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UnnamedParser#computeCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComputeCall(UnnamedParser.ComputeCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UnnamedParser#inputDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInputDefinition(UnnamedParser.InputDefinitionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UnnamedParser#reference}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReference(UnnamedParser.ReferenceContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code referenceExpression}
 	 * labeled alternative in {@link UnnamedParser#expression}.
 	 * @param ctx the parse tree

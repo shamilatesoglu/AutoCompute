@@ -118,6 +118,36 @@ public interface UnnamedListener extends ParseTreeListener {
 	 */
 	void exitRangeExpression(UnnamedParser.RangeExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UnnamedParser#computeCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterComputeCall(UnnamedParser.ComputeCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UnnamedParser#computeCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitComputeCall(UnnamedParser.ComputeCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UnnamedParser#inputDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterInputDefinition(UnnamedParser.InputDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UnnamedParser#inputDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitInputDefinition(UnnamedParser.InputDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UnnamedParser#reference}.
+	 * @param ctx the parse tree
+	 */
+	void enterReference(UnnamedParser.ReferenceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UnnamedParser#reference}.
+	 * @param ctx the parse tree
+	 */
+	void exitReference(UnnamedParser.ReferenceContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code referenceExpression}
 	 * labeled alternative in {@link UnnamedParser#expression}.
 	 * @param ctx the parse tree

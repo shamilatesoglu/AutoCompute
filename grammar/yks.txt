@@ -26,94 +26,94 @@ entity yks {
 
     entity tyt {
 
-        entity tyt_turkce {
+        entity turkce {
             in dogru.
             in yanlis.
 
-            out  tyt_turkce_net := dogru - yanlis * 0.25 given test_40_constraint_set.
+            out net := dogru - yanlis * 0.25 given test_40_constraint_set.
         }
 
-        entity tyt_matematik {
+        entity matematik {
             in dogru.
             in yanlis.
 
-            out tyt_matematik_net := dogru - yanlis * 0.25 given test_40_constraint_set.
+            out net := dogru - yanlis * 0.25 given test_40_constraint_set.
         }
 
-        entity tyt_fen {
+        entity fen {
             in dogru.
             in yanlis.
 
-            out tyt_fen_net :=  dogru - yanlis * 0.25 given test_20_constraint_set.
+            out net :=  dogru - yanlis * 0.25 given test_20_constraint_set.
         }
 
-        entity tyt_sosyal {
+        entity sosyal {
             in dogru.
             in yanlis.
 
-            out  tyt_sosyal_net := dogru - yanlis * 0.25 given test_20_constraint_set.
+            out net := dogru - yanlis * 0.25 given test_20_constraint_set.
         }
 
-        out tyt_net := tyt_turkce_net + tyt_matematik_net + tyt_sosyal_net + tyt_fen_net
+        out net := turkce::net + matematik::net + sosyal::net + fen::net
             given {
-                tyt_turkce_net >= 0.5 && tyt_matematik_net >= 0.5.
+                turkce::net >= 0.5 && matematik::net >= 0.5.
             }.
     }
 
     entity ayt {
 
-        entity ayt_edsos1 {
+        entity edsos1 {
             title: "EDEBİYAT-SOSYAL BİLİMLER 1".
 
             in dogru.
             in yanlis.
 
-            out ayt_edsos1_net := dogru - yanlis * 0.25 given test_40_constraint_set.
+            out net := dogru - yanlis * 0.25 given test_40_constraint_set.
 
         }
 
-        entity ayt_sosyal2 {
+        entity sosyal2 {
             title: "SOSYAL BİLİMLER 2".
 
             in dogru.
             in yanlis.
 
-            out  ayt_sosyal2_net := dogru - yanlis * 0.25 given test_40_constraint_set.
+            out  net := dogru - yanlis * 0.25 given test_40_constraint_set.
         }
 
-        entity ayt_matematik {
+        entity matematik {
             title: "MATEMATİK".
 
             in dogru.
             in yanlis.
 
-            out  ayt_matematik_net := dogru - yanlis * 0.25  given test_40_constraint_set.
+            out  net := dogru - yanlis * 0.25  given test_40_constraint_set.
         }
 
-        entity ayt_fen {
+        entity fen {
             title: "FEN BİLİMLERİ".
 
             in dogru.
             in yanlis.
 
-            out  ayt_fen_net := dogru - yanlis * 0.25  given test_40_constraint_set.
+            out  net := dogru - yanlis * 0.25  given test_40_constraint_set.
         }
 
     }
 
     entity ydt {
         entity yabanci_dil {
-            in dogru[0..80].
-            in yanlis[0..80].
+            in dogru.
+            in yanlis.
 
-            out  yabanci_dil_net := dogru - yanlis * 0.25  given test_80_constraint_set.
+            out net := dogru - yanlis * 0.25  given test_80_constraint_set.
         }
     }
 
-    out say_net := ayt_matematik_net + ayt_fen_net      given { ayt_matematik_net >= 0.5 && ayt_fen_net     >= 0.5. }.
-    out ea_net  := ayt_matematik_net + ayt_edsos1_net   given { ayt_matematik_net >= 0.5 && ayt_edsos1_net  >= 0.5. }.
-    out soz_net := ayt_edsos1_net + ayt_sosyal2_net     given { ayt_edsos1_net    >= 0.5 && ayt_sosyal2_net >= 0.5. }.
-    out dil_net := yabanci_dil_net                      given { yabanci_dil_net >= 0.5. }.
+    out say_net := ayt::matematik::net + ayt::fen::net      given { ayt::matematik::net >= 0.5 && ayt::fen::net     >= 0.5. }.
+    out ea_net  := ayt::matematik::net + ayt::edsos1::net   given { ayt::matematik::net >= 0.5 && ayt::edsos1::net  >= 0.5. }.
+    out soz_net := ayt::edsos1::net    + ayt::sosyal2::net  given { ayt::edsos1::net    >= 0.5 && ayt::sosyal2::net >= 0.5. }.
+    out dil_net := ydt::yabanci_dil::net                    given { ydt::yabanci_dil::net >= 0.5. }.
 
     out tyt_ham := 100.0 + (tyt_net * 400.0 / 120.0).
     out say_ham := ((tyt_ham - 100.0) * 0.4 + (say_net * 5.0) * 0.6) + 100.0.
@@ -128,13 +128,13 @@ entity yks {
     out dil_yerlestirme := dil_ham + ek_puan.
 }
 
-// result := compute yks {
-//    tyt_turkce::dogru <- 10.
-//    tyt_turkce::dogru <- 10.
-//    tyt_turkce::dogru <- 10.
-//    tyt_turkce::dogru <- 10.
-//    tyt_turkce::dogru <- 10.
-//    tyt_turkce::dogru <- 10.
-// }
-//
-// print result.
+compute yks {
+   tyt::turkce::dogru       << 35.
+   tyt::turkce::yanlis      << 3.
+   tyt::matematik::dogru    << 31.
+   tyt::matematik::yanlis   << 1.
+   tyt::sosyal::dogru       << 15.
+   tyt::sosyal::yanlis      << 3.
+   tyt::fen::dogru          << 19.
+   tyt::fen::yanlis         << 0.
+}

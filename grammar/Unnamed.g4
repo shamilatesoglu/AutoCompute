@@ -2,7 +2,7 @@
 grammar Unnamed;
 
 compilationUnit
-    :  entityDefinition EOF
+    :  (entityDefinition)* (computeCall)* EOF
     ;
 
 entityDefinition
@@ -31,7 +31,7 @@ outputDefinition
 
 given
     : GIVEN LCURLY (constraint)* RCURLY
-    | GIVEN identifier=ID
+    | GIVEN reference
     ;
 
 constraint
@@ -46,6 +46,18 @@ rangeExpression
     : LBRACKET expression DOTDOT expression RBRACKET
     ;
 
+computeCall
+    : COMPUTE reference LCURLY (inputDefinition)* RCURLY DOT
+    ;
+
+inputDefinition
+    : reference OPERATOR_IN expression DOT
+    ;
+
+reference
+    : ID ('::' ID)*
+    ;
+
 expression
     :   '(' expression ')'                                                                      # parenthesisExpression
     |   operation=('+'|'-') expression                                                          # unaryExpression
@@ -53,7 +65,7 @@ expression
     |   left=expression operation=('+'|'-') right=expression                                    # infixExpression
     |   left=expression operation=('=='|'!='|'>'|'<'|'>='|'<='|'&&'|'||') right=expression      # infixExpression
     |   check=expression '?' first=expression ':' second=expression                             # conditionalExpression
-    |   identifier=ID                                                                           # referenceExpression
+    |   reference                                                                               # referenceExpression
     |   value=(NUM|BOOLEAN_LITERAL)                                                             # numberExpression
     ;
 
@@ -66,6 +78,7 @@ OUT     : ('o'|'O')('u'|'U')('t'|'T');
 ENTITY  : ('e'|'E')('n'|'N')('t'|'T')('i'|'I')('t'|'T')('y'|'Y');
 GIVEN   : ('g'|'G')('i'|'I')('v'|'V')('e'|'E')('n'|'N');
 CONSTRAINTS : ('c'|'C')('o'|'O')('n'|'N')('s'|'S')('t'|'T')('r'|'R')('a'|'A')('i'|'I')('n'|'N')('t'|'T')('s'|'S');
+COMPUTE   : ('c'|'C')('o'|'O')('m'|'M')('p'|'P')('u'|'U')('t'|'T')('e'|'E');
 
 DOT     : '.';
 DOTDOT  : '..';
@@ -97,6 +110,8 @@ OPERATOR_GT: '>' ;
 OPERATOR_LT: '<' ;
 OPERATOR_GTEQ: '>=';
 OPERATOR_LTEQ: '<=';
+OPERATOR_SCOPE: '::';
+OPERATOR_IN   : '<<';
 
 NUM :   [0-9]+ ('.' [0-9]+)? ([eE] [+-]? [0-9]+)?;
 ID  :   [a-zA-Z_0-9]+;

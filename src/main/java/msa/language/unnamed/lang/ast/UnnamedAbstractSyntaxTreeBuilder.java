@@ -12,7 +12,17 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
 
     @Override
     public UnnamedAbstractSyntaxTreeNode visitCompilationUnit(UnnamedParser.CompilationUnitContext ctx) {
-        return visit(ctx.entityDefinition());
+        CompilationUnitASTNode node = new CompilationUnitASTNode();
+
+        node.getEntities().addAll(ctx.entityDefinition().stream()
+                .map(entityDefinitionContext -> (EntityASTNode) visitEntityDefinition(entityDefinitionContext))
+                .collect(Collectors.toList()));
+
+        node.getComputeCalls().addAll(ctx.computeCall().stream()
+                .map(computeCallContext -> (ComputeCallASTNode) visitComputeCall(computeCallContext))
+                .collect(Collectors.toList()));
+
+        return node;
     }
 
     @Override
@@ -23,33 +33,33 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
 
     @Override
     public UnnamedAbstractSyntaxTreeNode visitEntityBody(UnnamedParser.EntityBodyContext ctx) {
-        EntityBodyASTNode entityBodyASTNode = new EntityBodyASTNode();
+        EntityBodyASTNode node = new EntityBodyASTNode();
 
-        entityBodyASTNode.getProperties().addAll(ctx.propertyDefinition()
+        node.getProperties().addAll(ctx.propertyDefinition()
                 .stream().map(propertyDefinitionCtx -> (PropertyASTNode) visitPropertyDefinition(propertyDefinitionCtx))
                 .collect(Collectors.toList()));
 
-        entityBodyASTNode.getConstraintSets().addAll(ctx.constraintsDefinition()
+        node.getConstraintSets().addAll(ctx.constraintsDefinition()
                 .stream().map(constraintsDefinitionCtx -> (ConstraintSetASTNode) visitConstraintsDefinition(constraintsDefinitionCtx))
                 .collect(Collectors.toList()));
 
-        entityBodyASTNode.getInputs().addAll(ctx.inputDeclaration()
+        node.getInputs().addAll(ctx.inputDeclaration()
                 .stream().map(inputDeclarationCtx -> (InputDeclarationASTNode) visitInputDeclaration(inputDeclarationCtx))
                 .collect(Collectors.toList()));
 
-        entityBodyASTNode.getLocals().addAll(ctx.localVariableDefinition()
+        node.getLocals().addAll(ctx.localVariableDefinition()
                 .stream().map(variableDeclarationCtx -> (VariableDefinitionASTNode) visitLocalVariableDefinition(variableDeclarationCtx))
                 .collect(Collectors.toList()));
 
-        entityBodyASTNode.getEntities().addAll(ctx.entityDefinition()
+        node.getEntities().addAll(ctx.entityDefinition()
                 .stream().map(entityDefinitionCtx -> (EntityASTNode) visitEntityDefinition(entityDefinitionCtx))
                 .collect(Collectors.toList()));
 
-        entityBodyASTNode.getOutputs().addAll(ctx.outputDefinition()
+        node.getOutputs().addAll(ctx.outputDefinition()
                 .stream().map(outputDeclarationCtx -> (OutputDefinitionASTNode) visitOutputDefinition(outputDeclarationCtx))
                 .collect(Collectors.toList()));
 
-        return entityBodyASTNode;
+        return node;
     }
 
     @Override
@@ -87,10 +97,10 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
 
     @Override
     public UnnamedAbstractSyntaxTreeNode visitPropertyDefinition(UnnamedParser.PropertyDefinitionContext ctx) {
-        String text =  ctx.value.getText();
+        String text = ctx.value.getText();
         Object value;
         if (text.startsWith("\""))
-            value = text.substring(1, text.length()-1);
+            value = text.substring(1, text.length() - 1);
         else
             value = Double.parseDouble(text);
 
@@ -166,6 +176,25 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
 
     @Override
     public UnnamedAbstractSyntaxTreeNode visitReferenceExpression(UnnamedParser.ReferenceExpressionContext ctx) {
-        return new ReferencingASTNode(ctx.identifier.getText());
+        return new ReferencingASTNode(ctx.reference().getText());
+    }
+
+    @Override
+    public UnnamedAbstractSyntaxTreeNode visitComputeCall(UnnamedParser.ComputeCallContext ctx) {
+        ComputeCallASTNode node = new ComputeCallASTNode((ReferencingASTNode) visitReference(ctx.reference()));
+        node.getInputs().addAll(ctx.inputDefinition().stream()
+                .map(inputDefinitionContext -> (InputDefinitionASTNode) visitInputDefinition(inputDefinitionContext))
+                .collect(Collectors.toList()));
+        return node;
+    }
+
+    @Override
+    public UnnamedAbstractSyntaxTreeNode visitInputDefinition(UnnamedParser.InputDefinitionContext ctx) {
+        return new InputDefinitionASTNode((ReferencingASTNode) visitReference(ctx.reference()), (ExpressionASTNode) visit(ctx.expression()));
+    }
+
+    @Override
+    public UnnamedAbstractSyntaxTreeNode visitReference(UnnamedParser.ReferenceContext ctx) {
+        return new ReferencingASTNode(ctx.getText());
     }
 }
