@@ -169,15 +169,15 @@ public class DirectedGraph<V> implements Graph<V> {
     @Override
     public boolean isAdjacent(V v1, V v2) {
         if (!adj.containsKey(v1))
-            throw new NoSuchElementException(v1 + " does not exist in the graph.");
+            throw new NoSuchElementException(v1.toString() + " does not exist in the graph.");
         if (!adj.containsKey(v2))
-            throw new NoSuchElementException(v2 + " does not exist in the graph.");
+            throw new NoSuchElementException(v2.toString() + " does not exist in the graph.");
         return adj.get(v1).contains(v2);
     }
 
     @Override
     public boolean hasHamiltonianPath() {
-        return false;
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -194,7 +194,7 @@ public class DirectedGraph<V> implements Graph<V> {
 
     @Override
     public int countParallelEdges() {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        throw new UnsupportedOperationException("No parallel edge is allowed in this implementation.");
     }
 
     @Override
@@ -212,15 +212,19 @@ public class DirectedGraph<V> implements Graph<V> {
         return adj.get(v);
     }
 
-    public Set<V> getRoots() {
-        Set<V> roots = new HashSet<>();
+    public Set<V> getSinkVertices() {
+        Set<V> sinkVertices = new LinkedHashSet<>();
 
         for (V v : this) {
-            if (getAdjacencySet(v).isEmpty())
-                roots.add(v);
+            if (outDegree(v) == 0)
+                sinkVertices.add(v);
         }
 
-        return roots;
+        return sinkVertices;
+    }
+
+    public int outDegree(V v) {
+        return getAdjacencySet(v).size();
     }
 
     @Override
@@ -245,6 +249,6 @@ public class DirectedGraph<V> implements Graph<V> {
     }
 
     @Override
-    public Iterator<V> iterator() { return null; }
+    public Iterator<V> iterator() { throw new UnsupportedOperationException("Not implemented yet."); }
 
 }
