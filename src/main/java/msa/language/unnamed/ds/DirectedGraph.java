@@ -160,17 +160,7 @@ public class DirectedGraph<V> implements Graph<V> {
 
     @Override
     public boolean hasHamiltonianPath() {
-        Iterable<V> topologicalOrder = new TopologicalOrderTraversal();
-        V prev = null;
-        for (V v : topologicalOrder) {
-            if (prev != null) {
-                if (!isAdjacent(prev, v)) {
-                    return false;
-                }
-            }
-            prev = v;
-        }
-        return true;
+        return false;
     }
 
     @Override
