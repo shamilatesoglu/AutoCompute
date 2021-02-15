@@ -189,7 +189,7 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
 
     @Override
     public UnnamedAbstractSyntaxTreeNode visitInputDefinition(UnnamedParser.InputDefinitionContext ctx) {
-        return new InputDefinitionASTNode(ctx.reference().getText(), (ExpressionASTNode) visit(ctx.expression()));
+        return new InputDefinitionASTNode((ReferencingASTNode) visitReference(ctx.reference()), (ExpressionASTNode) visit(ctx.expression()));
     }
 
     @Override

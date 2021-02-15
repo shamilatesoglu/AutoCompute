@@ -5,17 +5,17 @@ import java.util.List;
 
 public class EntityBodyASTNode extends UnnamedAbstractSyntaxTreeNode {
 
-    List<PropertyASTNode> properties;
+    private final List<PropertyASTNode> properties;
 
-    List<ConstraintSetASTNode> constraintSets;
+    private final List<ConstraintSetASTNode> constraintSets;
 
-    List<InputDeclarationASTNode> inputs;
+    private final List<InputDeclarationASTNode> inputs;
 
-    List<VariableDefinitionASTNode> locals;
+    private final List<VariableDefinitionASTNode> locals;
 
-    List<EntityASTNode> entities;
+    private final List<EntityASTNode> entities;
 
-    List<OutputDefinitionASTNode> outputs;
+    private final List<OutputDefinitionASTNode> outputs;
 
     public EntityBodyASTNode() {
         properties = new ArrayList<>();

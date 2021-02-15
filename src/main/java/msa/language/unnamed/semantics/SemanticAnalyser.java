@@ -6,6 +6,9 @@ import msa.language.unnamed.cst.UnnamedParser;
 import msa.language.unnamed.semantics.exceptions.AlreadyDefinedException;
 import msa.language.unnamed.semantics.exceptions.UndefinedSymbolException;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
 
     private StaticScope currentScope;
@@ -13,23 +16,14 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
 
     private final SymbolTable symbolTable;
 
+    private final Queue<String> referencesMade;
+
     /**
      * Analyses the program structure to catch possible semantic errors
      */
     public SemanticAnalyser() {
         symbolTable = new SymbolTable();
-    }
-
-    public void setCurrentScope(StaticScope currentScope) {
-        this.currentScope = currentScope;
-    }
-
-    public StaticScope getCurrentScope() {
-        return currentScope;
-    }
-
-    public StaticScope getGlobalScope() {
-        return globalScope;
+        referencesMade = new ArrayDeque<>();
     }
 
     private String getReferenceForId(String id) {
@@ -64,6 +58,14 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
             visit(computeCall);
         }
 
+        // Check for undefined references after constructing the symbol table.
+        while (!referencesMade.isEmpty()) {
+            String reference = referencesMade.poll();
+            if (!symbolTable.contains(reference)){
+                throw new UndefinedSymbolException(reference);
+            }
+        }
+
         return null;
     }
 
@@ -74,8 +76,7 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
 
         String reference = node.getReference().getReferencedId();
 
-        if (!symbolTable.contains(reference)) throw new UndefinedSymbolException(reference);
-            currentScope = new StaticScope(reference, currentScope);
+        currentScope = new StaticScope(reference, currentScope);
 
         for (InputDefinitionASTNode inputDefinitionASTNode : node.getInputs()) {
             visit(inputDefinitionASTNode);
@@ -97,7 +98,9 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
     @Override
     public Void visit(ConstraintASTNode node) {
 
-        visit(node.getConstraint());
+        // Scope will be dynamically bounded.
+        // So, no checking for references.
+        // visit(node.getConstraint());
 
         return null;
     }
@@ -193,12 +196,7 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
     @Override
     public Void visit(InputDefinitionASTNode node) {
 
-        String reference = node.getId();
-
-        reference = getReferenceForId(reference);
-
-        if (!symbolTable.contains(reference)) throw new UndefinedSymbolException(reference);
-
+        visit(node.getReference());
         visit(node.getExpression());
 
         return null;
@@ -250,7 +248,11 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
 
     @Override
     public Void visit(ReferencingASTNode node) {
-        // TODO: Probably shouldn't try to resolve while building symbol table.
+
+        // Add to a queue to check for later.
+        // TODO: Multiples of same references may exist, maybe use a set?
+        referencesMade.add(getReferenceForId(node.getReferencedId()));
+
         return null;
     }
 
