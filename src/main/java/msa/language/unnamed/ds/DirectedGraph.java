@@ -105,6 +105,15 @@ public class DirectedGraph<V> implements Graph<V> {
             this.w = w;
         }
     }
+
+    public boolean isCyclic() {
+        List<Set<V>> stronglyConnectedComponents = getStronglyConnectedComponents();
+        for (Set<V> scc : stronglyConnectedComponents) {
+            if (scc.size() > 1)
+                return true;
+        }
+
+        return false;
     }
 
     @Override

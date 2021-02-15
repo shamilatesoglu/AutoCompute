@@ -5,9 +5,14 @@ import java.util.*;
 public class DirectedAcyclicGraph<V> extends DirectedGraph<V> {
 
     @Override
-    public void addVertex(V v) {
-        // TODO: Check if cyclic upon addition.
-        super.addVertex(v);
+    public void addEdge(V from, V to) {
+        super.addEdge(from, to);
+        if (isCyclic()) {
+            throw new IllegalArgumentException(String.format("Adding edge (%s -> %s) creates a cycle!",
+                    from.toString(), to.toString()));
+        }
+    }
+
     @Override
     public Iterator<V> iterator() {
         return new TopologicalOrderTraversal().iterator();
