@@ -7,7 +7,7 @@ public class InterpreterTest {
     public void testParseTree() {
 
 
-        String source = FileUtils.readString("grammar/sample.txt");
+        String source = FileUtils.readString("grammar/yks.txt");
 
         UnnamedInterpreter.getInstance().interpret(source);
     }

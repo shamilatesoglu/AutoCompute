@@ -52,6 +52,18 @@ public class UnnamedBaseListener implements UnnamedListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterPropertyDefinition(UnnamedParser.PropertyDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPropertyDefinition(UnnamedParser.PropertyDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterInputDeclaration(UnnamedParser.InputDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -88,6 +100,18 @@ public class UnnamedBaseListener implements UnnamedListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGiven(UnnamedParser.GivenContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGiven(UnnamedParser.GivenContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterConstraint(UnnamedParser.ConstraintContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -95,6 +119,18 @@ public class UnnamedBaseListener implements UnnamedListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitConstraint(UnnamedParser.ConstraintContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterConstraintsDefinition(UnnamedParser.ConstraintsDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConstraintsDefinition(UnnamedParser.ConstraintsDefinitionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

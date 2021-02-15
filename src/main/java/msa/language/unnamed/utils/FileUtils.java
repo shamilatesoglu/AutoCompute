@@ -1,23 +1,24 @@
 package msa.language.unnamed.utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class FileUtils {
     public static String readString(String path) {
-
         StringBuilder stringBuilder = new StringBuilder();
-        try {
-            File myObj = new File(path);
-            Scanner myReader = new Scanner(myObj);
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                stringBuilder.append(data);
+        File file = new File(path);
+        try (FileInputStream fis = new FileInputStream(file);
+             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(isr)
+        ) {
+
+            String str;
+            while ((str = reader.readLine()) != null) {
+                stringBuilder.append(str);
             }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

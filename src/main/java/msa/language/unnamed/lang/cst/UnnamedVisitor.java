@@ -29,6 +29,12 @@ public interface UnnamedVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitEntityBody(UnnamedParser.EntityBodyContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UnnamedParser#propertyDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPropertyDefinition(UnnamedParser.PropertyDefinitionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UnnamedParser#inputDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -47,11 +53,23 @@ public interface UnnamedVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOutputDefinition(UnnamedParser.OutputDefinitionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UnnamedParser#given}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGiven(UnnamedParser.GivenContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UnnamedParser#constraint}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitConstraint(UnnamedParser.ConstraintContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UnnamedParser#constraintsDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstraintsDefinition(UnnamedParser.ConstraintsDefinitionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UnnamedParser#rangeExpression}.
 	 * @param ctx the parse tree

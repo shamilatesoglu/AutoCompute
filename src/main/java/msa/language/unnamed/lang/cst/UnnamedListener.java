@@ -38,6 +38,16 @@ public interface UnnamedListener extends ParseTreeListener {
 	 */
 	void exitEntityBody(UnnamedParser.EntityBodyContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UnnamedParser#propertyDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterPropertyDefinition(UnnamedParser.PropertyDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UnnamedParser#propertyDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitPropertyDefinition(UnnamedParser.PropertyDefinitionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UnnamedParser#inputDeclaration}.
 	 * @param ctx the parse tree
 	 */
@@ -68,6 +78,16 @@ public interface UnnamedListener extends ParseTreeListener {
 	 */
 	void exitOutputDefinition(UnnamedParser.OutputDefinitionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UnnamedParser#given}.
+	 * @param ctx the parse tree
+	 */
+	void enterGiven(UnnamedParser.GivenContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UnnamedParser#given}.
+	 * @param ctx the parse tree
+	 */
+	void exitGiven(UnnamedParser.GivenContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UnnamedParser#constraint}.
 	 * @param ctx the parse tree
 	 */
@@ -77,6 +97,16 @@ public interface UnnamedListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitConstraint(UnnamedParser.ConstraintContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UnnamedParser#constraintsDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstraintsDefinition(UnnamedParser.ConstraintsDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UnnamedParser#constraintsDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstraintsDefinition(UnnamedParser.ConstraintsDefinitionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UnnamedParser#rangeExpression}.
 	 * @param ctx the parse tree
