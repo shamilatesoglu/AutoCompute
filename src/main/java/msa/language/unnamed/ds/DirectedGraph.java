@@ -19,6 +19,14 @@ public class DirectedGraph<V> implements Graph<V> {
         addVertex(origin);
     }
 
+    /**
+     * Returns sets of vertices that are strongly connected.
+     * If any set contains more than 1 element, the graph is cyclic.
+     *
+     * See: https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
+     *
+     * @return Sets of vertices that are strongly connected.
+     */
     public List<Set<V>> getStronglyConnectedComponents() {
         List<Set<V>> stronglyConnectedComponents = new ArrayList<>();
 
