@@ -35,7 +35,11 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
     }
 
     private void insertNewDeclaration(Symbol symbol) {
-        if (symbolTable.contains(symbol.getName())) {
+        insertNewDeclaration(symbol, false);
+    }
+
+    private void insertNewDeclaration(Symbol symbol, boolean allowRedefinition) {
+        if ((!allowRedefinition) && symbolTable.contains(symbol.getName())) {
             throw new AlreadyDefinedException(symbol.getName(), symbolTable.lookup(symbol.getName()).getName());
         } else {
             symbolTable.insert(symbol);
@@ -109,7 +113,7 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
     public Void visit(ConstraintSetASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), Symbol.Type.CONSTRAINT_SET);
+        Symbol symbol = new Symbol(getReferenceForId(name), node);
         insertNewDeclaration(symbol);
 
         for (ConstraintASTNode constraint : node.getConstraints()) {
@@ -123,7 +127,7 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
     public Void visit(EntityASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), Symbol.Type.ENTITY);
+        Symbol symbol = new Symbol(getReferenceForId(name), node);
         insertNewDeclaration(symbol);
 
         currentScope = new StaticScope(getReferenceForId(name), currentScope);
@@ -187,7 +191,7 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
     public Void visit(InputDeclarationASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), Symbol.Type.INPUT);
+        Symbol symbol = new Symbol(getReferenceForId(name), node);
         insertNewDeclaration(symbol);
 
         return null;
@@ -206,8 +210,8 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
     public Void visit(VariableDefinitionASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), Symbol.Type.INTERMEDIATE);
-        insertNewDeclaration(symbol);
+        Symbol symbol = new Symbol(getReferenceForId(name), node);
+        insertNewDeclaration(symbol, true);
 
         visit(node.getExpressionASTNode());
         visit(node.getGivenASTNode());
@@ -230,7 +234,7 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
     public Void visit(OutputDefinitionASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), Symbol.Type.OUTPUT);
+        Symbol symbol = new Symbol(getReferenceForId(name), node);
         insertNewDeclaration(symbol);
 
         visit(node.getExpressionASTNode());
@@ -256,4 +260,8 @@ public class SemanticAnalyser extends UnnamedAbstractSyntaxTreeVisitor<Void> {
         return null;
     }
 
+
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
+    }
 }

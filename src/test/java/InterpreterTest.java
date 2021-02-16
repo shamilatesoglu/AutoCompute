@@ -1,5 +1,4 @@
 import msa.language.unnamed.Unnamed;
-import msa.language.unnamed.exec.UnnamedInterpreter;
 import msa.language.unnamed.utils.FileUtils;
 import org.junit.jupiter.api.Test;
 

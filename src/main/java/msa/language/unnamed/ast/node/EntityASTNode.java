@@ -1,11 +1,10 @@
 package msa.language.unnamed.ast.node;
 
-public class EntityASTNode extends UnnamedAbstractSyntaxTreeNode {
-    private final String id;
+public class EntityASTNode extends IdentifiableASTNode {
     private final  EntityBodyASTNode entityBodyASTNode;
 
     public EntityASTNode(String id, EntityBodyASTNode entityBodyASTNode) {
-        this.id = id;
+        super(id);
         this.entityBodyASTNode = entityBodyASTNode;
     }
 
@@ -13,7 +12,4 @@ public class EntityASTNode extends UnnamedAbstractSyntaxTreeNode {
         return entityBodyASTNode;
     }
 
-    public String getId() {
-        return id;
-    }
 }

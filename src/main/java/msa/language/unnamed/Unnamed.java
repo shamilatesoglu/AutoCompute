@@ -4,18 +4,15 @@ import msa.language.unnamed.ast.UnnamedAbstractSyntaxTreeBuilder;
 import msa.language.unnamed.ast.node.CompilationUnitASTNode;
 import msa.language.unnamed.cst.UnnamedLexer;
 import msa.language.unnamed.cst.UnnamedParser;
-import msa.language.unnamed.exec.UnnamedInterpreter;
+import msa.language.unnamed.runtime.UnnamedInterpreter;
 import msa.language.unnamed.semantics.SemanticAnalyser;
 import msa.language.unnamed.utils.FileUtils;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 public class Unnamed {
-
-    private UnnamedInterpreter interpreter;
-
     public Unnamed() {
-        interpreter = new UnnamedInterpreter();
+
     }
 
     public static void main(String[] args) {
@@ -39,6 +36,8 @@ public class Unnamed {
         semanticAnalyser.visit(root);
 
         // Interpretation
+
+        UnnamedInterpreter interpreter = new UnnamedInterpreter(semanticAnalyser.getSymbolTable());
         interpreter.interpret(root);
     }
 

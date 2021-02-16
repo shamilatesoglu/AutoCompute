@@ -1,23 +1,21 @@
 package msa.language.unnamed.semantics;
 
-public class Symbol {
-    private final Type type;
-    private String name;
+import msa.language.unnamed.ast.node.IdentifiableASTNode;
 
-    public Symbol(String name, Type type) {
+public class Symbol {
+    private final String name;
+    private final IdentifiableASTNode declaringASTNode;
+
+    public Symbol(String name, IdentifiableASTNode declaringASTNode) {
         this.name = name;
-        this.type = type;
+        this.declaringASTNode = declaringASTNode;
     }
 
     public String getName() {
         return name;
     }
 
-    public enum Type {
-        ENTITY,
-        CONSTRAINT_SET,
-        INPUT,
-        OUTPUT,
-        INTERMEDIATE
+    public IdentifiableASTNode getDeclaringASTNode() {
+        return declaringASTNode;
     }
 }
