@@ -4,10 +4,10 @@ public class StaticScope {
 
     private final StaticScope enclosingScope;
 
-    private final String scopeName;
+    private final String reference;
 
-    public StaticScope(String name, StaticScope enclosingScope) {
-        this.scopeName = name;
+    public StaticScope(String reference, StaticScope enclosingScope) {
+        this.reference = reference;
         this.enclosingScope = enclosingScope;
     }
 
@@ -15,7 +15,7 @@ public class StaticScope {
         return enclosingScope;
     }
 
-    public String getScopeName() {
-        return scopeName;
+    public String getReference() {
+        return reference;
     }
 }
