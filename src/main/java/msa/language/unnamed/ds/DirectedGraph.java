@@ -22,7 +22,7 @@ public class DirectedGraph<V> implements Graph<V> {
     /**
      * Returns sets of vertices that are strongly connected.
      * If any set contains more than 1 element, the graph is cyclic.
-     *
+     * <p>
      * See: https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
      *
      * @return Sets of vertices that are strongly connected.
@@ -73,19 +73,19 @@ public class DirectedGraph<V> implements Graph<V> {
                 // Successor w is in stack S and hence in the current SCC
                 // If w is not on stack, then (v, w) is an edge pointing to an SCC already found and must be ignored
                 // Note: The next line may look odd - but is correct.
-                // It says w.index not w.lowlink; that is deliberate and from the original paper
-                edge.v.lowLink= Math.min(edge.v.lowLink, edge.w.index);
+                // It says w.index not w.lowLink; that is deliberate and from the original paper
+                edge.v.lowLink = Math.min(edge.v.lowLink, edge.w.index);
             }
         }
 
         if (v.lowLink == v.index) {
             Set<V> stronglyConnectedComponent = new LinkedHashSet<>();
-            while(!S.isEmpty()) {
-                TarjanVertexWrapper<V> w = S.pop();
+            TarjanVertexWrapper<V> w;
+            do {
+                w = S.pop();
                 w.onStack = false;
                 stronglyConnectedComponent.add(w.v);
-                if (w.v.equals(v.v)) break;
-            }
+            } while (!w.v.equals(v.v));
             stronglyConnectedComponents.add(stronglyConnectedComponent);
         }
     }
@@ -227,6 +227,16 @@ public class DirectedGraph<V> implements Graph<V> {
         return getAdjacencySet(v).size();
     }
 
+    public int inDegree(V v) {
+        int inDegree = 0;
+
+        for (Set<V> adjacencyList  : adj.values()) {
+            if (adjacencyList.contains(v)) inDegree++;
+        }
+
+        return inDegree;
+    }
+
     @Override
     public Iterable<V> vertices() {
         return adj.keySet();
@@ -249,6 +259,8 @@ public class DirectedGraph<V> implements Graph<V> {
     }
 
     @Override
-    public Iterator<V> iterator() { throw new UnsupportedOperationException("Not implemented yet."); }
+    public Iterator<V> iterator() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
 
 }
