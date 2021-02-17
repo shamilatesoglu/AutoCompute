@@ -110,10 +110,14 @@ public class UnnamedAbstractSyntaxTreeBuilder extends UnnamedBaseVisitor<Unnamed
     @Override
     public UnnamedAbstractSyntaxTreeNode visitGiven(UnnamedParser.GivenContext ctx) {
         GivenASTNode node = new GivenASTNode();
-        if (ctx != null)
+        if (ctx != null) {
             node.getConstraints().addAll(ctx.constraint()
                     .stream().map(constraintCtx -> (ConstraintASTNode) visitConstraint(constraintCtx))
                     .collect(Collectors.toList()));
+            if (ctx.reference() != null) {
+                node.setConstraintSetReference(ctx.reference().getText());
+            }
+        }
         return node;
     }
 
