@@ -7,10 +7,10 @@ public class DirectedAcyclicGraph<V> extends DirectedGraph<V> {
     @Override
     public void addEdge(V from, V to) {
         super.addEdge(from, to);
-        if (isCyclic()) {
-            throw new IllegalArgumentException(String.format("Adding edge (%s -> %s) creates a cycle!",
-                    from.toString(), to.toString()));
-        }
+        //if (isCyclic()) {
+        //    throw new IllegalArgumentException(String.format("Adding edge (%s -> %s) creates a cycle!",
+        //            from.toString(), to.toString()));
+        //}
     }
 
     @Override

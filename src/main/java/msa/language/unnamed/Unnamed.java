@@ -24,12 +24,15 @@ public class Unnamed {
 
 
     public void execute(String source) {
+        // TODO: Interpreter maybe should be able to handle multiple sources?
+
         // Lexical Analysis
         UnnamedLexer lexer = new UnnamedLexer(CharStreams.fromString(source));
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         UnnamedParser parser = new UnnamedParser(tokenStream);
         UnnamedParser.CompilationUnitContext cst = parser.compilationUnit();
         CompilationUnitASTNode root = (CompilationUnitASTNode) new UnnamedAbstractSyntaxTreeBuilder().visitCompilationUnit(cst);
+
 
         // Semantic Analysis
         SemanticAnalyser semanticAnalyser = new SemanticAnalyser();
