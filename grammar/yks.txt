@@ -5,10 +5,11 @@ compute yks {
    tyt::turkce::yanlis      << 3.
    tyt::matematik::dogru    << 31.
    tyt::matematik::yanlis   << 1.
-   tyt::sosyal::dogru       << 15.
+   tyt::sosyal::dogru       << 150.
    tyt::sosyal::yanlis      << 3.
    tyt::fen::dogru          << 19.
    tyt::fen::yanlis         << 0.
+   diploma_notu             << 123.
 }.
 
 entity yks {
@@ -34,10 +35,12 @@ entity yks {
     }.
 
 
-    in diploma_notu[50.0..100.0].
+    in diploma_notu.
     in daha_once_yerlesti.
 
-    ek_puan := (diploma_notu * 5.0) * (daha_once_yerlesti ? 0.06 : 0.12).
+    ek_puan := (diploma_notu * 5.0) * (daha_once_yerlesti ? 0.06 : 0.12) given {
+        diploma_notu >= 50.0 && diploma_notu <= 100, "Diploma notu 50 ile 100 arasında olmalı!".
+    }.
 
     entity tyt {
         title: "TEMEL YETERLİLİK SINAVI".
