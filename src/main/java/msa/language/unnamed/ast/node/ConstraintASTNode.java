@@ -9,7 +9,7 @@ public class ConstraintASTNode extends ExpressionASTNode{
         this.rationale = rationale;
     }
 
-    public ExpressionASTNode getConstraint() {
+    public ExpressionASTNode getExpression() {
         return constraint;
     }
 

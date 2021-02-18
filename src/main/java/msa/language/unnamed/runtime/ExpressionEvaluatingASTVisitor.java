@@ -64,7 +64,7 @@ public class ExpressionEvaluatingASTVisitor extends ScopeAwareASTVisitor<Double>
 
     @Override
     public Double visit(ReferencingASTNode node) {
-        String reference = getReferenceForId(node.getReferencedId());
+        String reference = getFullReference(node.getReferencedId());
         if (!inputs.containsKey(reference))
             throw new DependencyNotFoundException(reference);
         return inputs.get(reference);

@@ -3,11 +3,6 @@ package msa.language.unnamed.semantics;
 import msa.language.unnamed.ast.UnnamedAbstractSyntaxTreeVisitor;
 import msa.language.unnamed.ast.node.*;
 import msa.language.unnamed.cst.UnnamedParser;
-import msa.language.unnamed.semantics.exceptions.AlreadyDefinedException;
-import msa.language.unnamed.semantics.exceptions.UndefinedSymbolException;
-
-import java.util.ArrayDeque;
-import java.util.Queue;
 
 public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeVisitor<T> {
     private StaticScope currentScope;
@@ -19,13 +14,18 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
 
     /**
      * Prefixes scope resolution operator and current scope name to the id of the variable.
+     *
      * @param id Name of the variable. Should not contain scope resolution operator, otherwise wouldn't work as intended.
      * @return Full reference to the variable.
      */
-    public String getReferenceForId(String id) {
+    public String getFullReference(String id) {
+        return getFullReference(id, getCurrentScope());
+    }
+
+    public String getFullReference(String id, StaticScope scope) {
         String scopeOperator = UnnamedParser.VOCABULARY.getLiteralName(UnnamedParser.OPERATOR_SCOPE);
         scopeOperator = scopeOperator.substring(1, scopeOperator.length() - 1);
-        String currentScopeName = getCurrentScope().getReference();
+        String currentScopeName = scope.getReference();
 
         return currentScopeName == null ? id : currentScopeName + scopeOperator + id;
     }
@@ -92,12 +92,13 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
     @Override
     public T visit(ConstraintASTNode node) {
 
-        // TODO: Scope will be dynamically bounded.
-        //  So, no checking for references.
-        //  visit(node.getConstraint());
+        // Scope will be dynamically bounded at runtime.
+        // So, no checking for references. And no visiting beyond this point.
+        // You have to override this method to evaluate expressions at runtime.
 
         return null;
     }
+
     @Override
     public T visit(ConstraintSetASTNode node) {
 
@@ -112,7 +113,7 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
     public T visit(EntityASTNode node) {
         String name = node.getId();
 
-        setCurrentScope(new StaticScope(getReferenceForId(name), getCurrentScope()));
+        setCurrentScope(new StaticScope(getFullReference(name), getCurrentScope()));
 
         return visit(node.getBlockASTNode());
     }
@@ -173,7 +174,6 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
 
         return null;
     }
-
 
 
     @Override

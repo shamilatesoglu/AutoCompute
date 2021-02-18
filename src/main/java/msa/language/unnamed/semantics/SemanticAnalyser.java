@@ -1,8 +1,6 @@
 package msa.language.unnamed.semantics;
 
-import msa.language.unnamed.ast.UnnamedAbstractSyntaxTreeVisitor;
 import msa.language.unnamed.ast.node.*;
-import msa.language.unnamed.cst.UnnamedParser;
 import msa.language.unnamed.semantics.exceptions.AlreadyDefinedException;
 import msa.language.unnamed.semantics.exceptions.UndefinedSymbolException;
 
@@ -23,11 +21,11 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
         referencesMade = new ArrayDeque<>();
     }
 
-    private void insertNewDeclaration(Symbol symbol) {
-        insertNewDeclaration(symbol, false);
+    private void declare(Symbol symbol) {
+        declare(symbol, false);
     }
 
-    private void insertNewDeclaration(Symbol symbol, boolean allowRedefinition) {
+    private void declare(Symbol symbol, boolean allowRedefinition) {
         if ((!allowRedefinition) && symbolTable.contains(symbol.getName())) {
             throw new AlreadyDefinedException(symbol.getName(), symbolTable.lookup(symbol.getName()).getName());
         } else {
@@ -54,8 +52,8 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
     public Void visit(ConstraintSetASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), node);
-        insertNewDeclaration(symbol);
+        Symbol symbol = new Symbol(getFullReference(name), node);
+        declare(symbol);
 
         return super.visit(node);
     }
@@ -64,8 +62,8 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
     public Void visit(EntityASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), node);
-        insertNewDeclaration(symbol);
+        Symbol symbol = new Symbol(getFullReference(name), node);
+        declare(symbol);
 
         return super.visit(node);
     }
@@ -74,8 +72,8 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
     public Void visit(InputDeclarationASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), node);
-        insertNewDeclaration(symbol);
+        Symbol symbol = new Symbol(getFullReference(name), node);
+        declare(symbol);
 
         return null;
     }
@@ -84,8 +82,8 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
     public Void visit(VariableDefinitionASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), node);
-        insertNewDeclaration(symbol, true);
+        Symbol symbol = new Symbol(getFullReference(name), node);
+        declare(symbol, true);
 
         return super.visit(node);
     }
@@ -94,8 +92,8 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
     public Void visit(OutputDefinitionASTNode node) {
         String name = node.getId();
 
-        Symbol symbol = new Symbol(getReferenceForId(name), node);
-        insertNewDeclaration(symbol);
+        Symbol symbol = new Symbol(getFullReference(name), node);
+        declare(symbol);
 
         return super.visit(node);
     }
@@ -105,7 +103,7 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
 
         // Add to a queue to check for later.
         // TODO: Multiples of same references may exist, maybe use a set?
-        referencesMade.add(getReferenceForId(node.getReferencedId()));
+        referencesMade.add(getFullReference(node.getReferencedId()));
 
         return null;
     }

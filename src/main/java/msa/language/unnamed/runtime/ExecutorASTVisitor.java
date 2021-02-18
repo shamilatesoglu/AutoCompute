@@ -1,21 +1,21 @@
 package msa.language.unnamed.runtime;
 
 import msa.language.unnamed.ast.node.*;
+import msa.language.unnamed.ds.Pair;
 import msa.language.unnamed.runtime.exceptions.DependencyNotFoundException;
 import msa.language.unnamed.semantics.ScopeAwareASTVisitor;
 import msa.language.unnamed.semantics.StaticScope;
+import msa.language.unnamed.semantics.Symbol;
 import msa.language.unnamed.semantics.SymbolTable;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
 
     private final Map<String, Double> evaluated;
+    private final Map<String, Double> inferred;
     private final Set<String> unableToEvaluate;
-    private final Map<String, Double> filtered;
+    private final Map<String, Pair<Double, String>> filtered;
 
     private final DependencyGraph dependencyGraph;
     private final SymbolTable symbolTable;
@@ -26,12 +26,15 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
         this.evaluated = new LinkedHashMap<>();
         this.unableToEvaluate = new LinkedHashSet<>();
         this.filtered = new LinkedHashMap<>();
+        this.inferred = new LinkedHashMap<>();
     }
 
     private void evaluateExpressionAndStore(String reference, ExpressionASTNode expression) {
         try {
             Double result = evaluateExpression(expression);
             evaluated.put(reference, result);
+            inferred.put(reference, result);
+
         } catch (DependencyNotFoundException e) {
             unableToEvaluate.add(reference);
         }
@@ -68,7 +71,7 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
 
     @Override
     public Double visit(InputDefinitionASTNode node) {
-        String reference = getReferenceForId(node.getReference().getReferencedId());
+        String reference = getFullReference(node.getReference().getReferencedId());
 
         evaluated.put(reference, evaluateExpression(node.getExpression()));
 
@@ -78,7 +81,7 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
 
     @Override
     public Double visit(VariableDefinitionASTNode node) {
-        String reference = getReferenceForId(node.getId());
+        String reference = getFullReference(node.getId());
 
         ExpressionASTNode expression = node.getExpressionASTNode();
         evaluateExpressionAndStore(reference, expression);
@@ -88,12 +91,60 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
 
     @Override
     public Double visit(OutputDefinitionASTNode node) {
-        String reference = getReferenceForId(node.getId());
+        String reference = getFullReference(node.getId());
 
         ExpressionASTNode expression = node.getExpressionASTNode();
+        GivenASTNode given = node.getGivenASTNode();
         evaluateExpressionAndStore(reference, expression);
+
+        String constraintSetRef = given.getConstraintSetReference();
+        List<ConstraintASTNode> constraints = given.getConstraints();
+        if (constraintSetRef != null) {
+            Symbol constraintSetSymbol = null;
+            if (symbolTable.contains(constraintSetRef)) {
+                constraintSetSymbol = symbolTable.lookup(constraintSetRef);
+            } else {
+                StaticScope scope = getCurrentScope();
+                while (scope != null) {
+                    if (scope.getReference() == null) break;
+                    Symbol entitySymbol = symbolTable.lookup(scope.getReference());
+                    EntityASTNode entity = (EntityASTNode) entitySymbol.getDeclaringASTNode();
+
+                    for (ConstraintSetASTNode constraintSet : entity.getBlockASTNode().getConstraintSets()) {
+                        String id = constraintSet.getId();
+                        if (id.equals(constraintSetRef)) {
+                            constraintSetRef = getFullReference(id, scope);
+                            constraintSetSymbol = symbolTable.lookup(constraintSetRef);
+                            break;
+                        }
+                    }
+
+                    scope = scope.getEnclosingScope();
+                }
+
+            }
+
+            ConstraintSetASTNode constraintSet = (ConstraintSetASTNode) constraintSetSymbol.getDeclaringASTNode();
+            constraints = constraintSet.getConstraints();
+        }
+
+        for (ConstraintASTNode constraint : constraints) {
+            try {
+                Double result = evaluateExpression(constraint.getExpression());
+                if (result <= 0.0) {
+                    filtered.put(reference, new Pair<>(evaluated.get(reference), constraint.getRationale()));
+                    evaluated.remove(reference);
+                }
+            } catch (DependencyNotFoundException e) {
+                unableToEvaluate.add(reference);
+            }
+        }
 
         return null;
     }
 
+    @Override
+    public Double visit(ConstraintASTNode node) {
+        return visit(node.getExpression());
+    }
 }

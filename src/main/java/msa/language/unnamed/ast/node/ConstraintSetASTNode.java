@@ -1,5 +1,7 @@
 package msa.language.unnamed.ast.node;
 
+import msa.language.unnamed.semantics.StaticScope;
+
 import java.util.ArrayList;
 import java.util.List;
 
