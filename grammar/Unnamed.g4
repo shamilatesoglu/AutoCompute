@@ -63,7 +63,8 @@ expression
     |   operation=('+'|'-') expression                                                          # unaryExpression
     |   left=expression operation=('*'|'/') right=expression                                    # infixExpression
     |   left=expression operation=('+'|'-') right=expression                                    # infixExpression
-    |   left=expression operation=('=='|'!='|'>'|'<'|'>='|'<='|'&&'|'||') right=expression      # infixExpression
+    |   left=expression operation=('=='|'!='|'>'|'<'|'>='|'<=') right=expression                # infixExpression
+    |   left=expression operation=('&&'|'||') right=expression                                  # infixExpression
     |   check=expression '?' first=expression ':' second=expression                             # conditionalExpression
     |   reference                                                                               # referenceExpression
     |   value=(NUM|BOOLEAN_LITERAL)                                                             # numberExpression
