@@ -14,18 +14,23 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import picocli.CommandLine;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.Callable;
 
 
 public class Unnamed implements Callable<Integer> {
 
-    // Command line parameters
+    /// Command line parameters
     @CommandLine.Option(names = {"-t"}, description = "Prints the execution time.")
     private boolean printExecutionTime;
 
     @CommandLine.Parameters(index = "0", description = "The source file to interpret.")
+    // TODO: Interpreter maybe should be able to handle multiple sources?
     private String filepath;
-    //
+    ///
 
     private SymbolTable symbolTable;
     private DependencyGraph dependencyGraph;
@@ -34,16 +39,15 @@ public class Unnamed implements Callable<Integer> {
         int exitCode = new CommandLine(new Unnamed()).execute(args);
         System.exit(exitCode);
     }
-
-
+    
     public Unnamed() {
-        // TODO: Interpreter maybe should be able to handle multiple sources?
-
     }
 
+    public void execute(String source) {
+        // TODO: Interpreter should retain state, and be able to execute codes in succession.
+    }
 
-
-    public static void executeAll(String source) {
+    public static void executeAll(String source, PrintStream out) {
         // Lexical Analysis
         UnnamedLexer lexer = new UnnamedLexer(CharStreams.fromString(source));
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
@@ -57,10 +61,18 @@ public class Unnamed implements Callable<Integer> {
         semanticAnalyser.visit(root);
 
         // Interpretation
-        UnnamedInterpreter interpreter = new UnnamedInterpreter(semanticAnalyser.getSymbolTable());
+        UnnamedInterpreter interpreter = new UnnamedInterpreter(semanticAnalyser.getSymbolTable(), out);
         interpreter.interpret(root);
     }
 
+    public static void executeAll(String source) {
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream(FileDescriptor.out), true, "UTF-8");
+            executeAll(source, out);
+        } catch (UnsupportedEncodingException e) {
+            throw new InternalError("VM does not support mandatory encoding UTF-8");
+        }
+    }
 
     private int runFromCommandLine() {
 
