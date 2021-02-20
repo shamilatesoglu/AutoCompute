@@ -72,7 +72,7 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
     @Override
     public T visit(CompilationUnitASTNode node) {
 
-        setGlobalScope(new Scope( null, null));
+        setGlobalScope(new Scope(null, null));
         enterScope(getGlobalScope());
 
         for (EntityASTNode entity : node.getEntities()) {

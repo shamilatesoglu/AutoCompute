@@ -1,6 +1,9 @@
 package msa.language.unnamed.runtime;
 
-import msa.language.unnamed.ast.node.*;
+import msa.language.unnamed.ast.node.IdentifiableASTNode;
+import msa.language.unnamed.ast.node.OutputDefinitionASTNode;
+import msa.language.unnamed.ast.node.ReferencingASTNode;
+import msa.language.unnamed.ast.node.VariableDefinitionASTNode;
 import msa.language.unnamed.semantics.ScopeAwareASTVisitor;
 import msa.language.unnamed.semantics.SymbolTable;
 

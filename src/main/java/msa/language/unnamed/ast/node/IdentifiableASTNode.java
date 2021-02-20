@@ -1,6 +1,6 @@
 package msa.language.unnamed.ast.node;
 
-public abstract class IdentifiableASTNode extends  UnnamedAbstractSyntaxTreeNode{
+public abstract class IdentifiableASTNode extends UnnamedAbstractSyntaxTreeNode {
     private final String id;
 
     public IdentifiableASTNode(String id) {

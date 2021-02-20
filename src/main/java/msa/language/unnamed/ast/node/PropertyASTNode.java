@@ -1,6 +1,6 @@
 package msa.language.unnamed.ast.node;
 
-public class PropertyASTNode extends IdentifiableASTNode{
+public class PropertyASTNode extends IdentifiableASTNode {
 
     private final Object value;
 

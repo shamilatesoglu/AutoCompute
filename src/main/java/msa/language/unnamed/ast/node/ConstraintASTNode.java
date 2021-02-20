@@ -1,6 +1,6 @@
 package msa.language.unnamed.ast.node;
 
-public class ConstraintASTNode extends ExpressionASTNode{
+public class ConstraintASTNode extends ExpressionASTNode {
     private final ExpressionASTNode constraint;
     private final String rationale;
 

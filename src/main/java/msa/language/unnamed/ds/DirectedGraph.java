@@ -230,7 +230,7 @@ public class DirectedGraph<V> implements Graph<V> {
     public int inDegree(V v) {
         int inDegree = 0;
 
-        for (Set<V> adjacencyList  : adj.values()) {
+        for (Set<V> adjacencyList : adj.values()) {
             if (adjacencyList.contains(v)) inDegree++;
         }
 

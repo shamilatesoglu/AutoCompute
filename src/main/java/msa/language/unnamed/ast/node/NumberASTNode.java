@@ -1,6 +1,6 @@
 package msa.language.unnamed.ast.node;
 
-public class NumberASTNode extends ExpressionASTNode{
+public class NumberASTNode extends ExpressionASTNode {
     private final Double value;
 
     public NumberASTNode(Double value) {

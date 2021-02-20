@@ -21,7 +21,8 @@ public class EntityBodyASTNode extends UnnamedAbstractSyntaxTreeNode {
         properties = new ArrayList<>();
         constraintSets = new ArrayList<>();
         inputs = new ArrayList<>();
-        locals = new ArrayList<>();;
+        locals = new ArrayList<>();
+        ;
         entities = new ArrayList<>();
         outputs = new ArrayList<>();
     }

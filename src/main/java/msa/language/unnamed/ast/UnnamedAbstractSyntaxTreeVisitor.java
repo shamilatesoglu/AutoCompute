@@ -25,7 +25,7 @@ public abstract class UnnamedAbstractSyntaxTreeVisitor<T> {
 
     public abstract T visit(InputDefinitionASTNode node);
 
-    public abstract T visit( VariableDefinitionASTNode node);
+    public abstract T visit(VariableDefinitionASTNode node);
 
     public abstract T visit(NegationASTNode node);
 

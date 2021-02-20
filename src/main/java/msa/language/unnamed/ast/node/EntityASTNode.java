@@ -1,7 +1,7 @@
 package msa.language.unnamed.ast.node;
 
 public class EntityASTNode extends IdentifiableASTNode {
-    private final  EntityBodyASTNode entityBodyASTNode;
+    private final EntityBodyASTNode entityBodyASTNode;
 
     public EntityASTNode(String id, EntityBodyASTNode entityBodyASTNode) {
         super(id);

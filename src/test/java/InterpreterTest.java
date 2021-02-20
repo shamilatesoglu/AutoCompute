@@ -25,11 +25,10 @@ public class InterpreterTest {
     public void testSpeed() {
 
 
-
         String source = FileUtils.readString("grammar/yks.txt");
 
-        int i = 100;
-        while(i-- > 0) {
+        int i = 30;
+        while (i-- > 0) {
             long t =
                     new ExecutionTimer() {
                         @Override
@@ -47,29 +46,29 @@ public class InterpreterTest {
 
     private void compute(String source) throws UnsupportedEncodingException {
         source += "compute yks {\n" +
-                "   tyt::turkce::dogru       << " + ((int)(Math.random() * 20))         + ".\n" +
-                "   tyt::turkce::yanlis      << " + ((int)(Math.random() * 20))         + ".\n" +
-                "   tyt::matematik::dogru    << " + ((int)(Math.random() * 20))         + ".\n" +
-                "   tyt::matematik::yanlis   << " + ((int)(Math.random() * 20))         + ".\n" +
-                "   tyt::sosyal::dogru       << " + ((int)(Math.random() * 20))         + ".\n" +
-                "   tyt::sosyal::yanlis      << " + ((int)(Math.random() * 20))         + ".\n" +
-                "   tyt::fen::dogru          << " + ((int)(Math.random() * 20))         + ".\n" +
-                "   tyt::fen::yanlis         << " + ((int)(Math.random() * 20))         + ".\n" +
-                "   diploma_notu             << " + ((int)(50 + Math.random() * 50))    + ".\n" +
+                "   tyt::turkce::dogru       << " + ((int) (Math.random() * 20)) + ".\n" +
+                "   tyt::turkce::yanlis      << " + ((int) (Math.random() * 20)) + ".\n" +
+                "   tyt::matematik::dogru    << " + ((int) (Math.random() * 20)) + ".\n" +
+                "   tyt::matematik::yanlis   << " + ((int) (Math.random() * 20)) + ".\n" +
+                "   tyt::sosyal::dogru       << " + ((int) (Math.random() * 20)) + ".\n" +
+                "   tyt::sosyal::yanlis      << " + ((int) (Math.random() * 20)) + ".\n" +
+                "   tyt::fen::dogru          << " + ((int) (Math.random() * 20)) + ".\n" +
+                "   tyt::fen::yanlis         << " + ((int) (Math.random() * 20)) + ".\n" +
+                "   diploma_notu             << " + ((int) (50 + Math.random() * 50)) + ".\n" +
                 "}.\n";
 
         execute(source);
     }
 
     private void execute(String source) throws UnsupportedEncodingException {
-        ByteArrayOutputStream outputStream= new ByteArrayOutputStream();
-        Unnamed.executeAll(source, new PrintStream( outputStream, true, "UTF-8"));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Unnamed.executeAll(source, new PrintStream(outputStream, true, "UTF-8"));
         String result = outputStream.toString("utf-8");
 
         List<Pair<String, Object>> results = new ArrayList<>();
         String[] lines = result.split(System.lineSeparator());
         for (String line : lines) {
-            String[] arr=  line.split(" = ");
+            String[] arr = line.split(" = ");
             String reference = arr[0];
             String value = arr[1];
             value = value.substring(0, value.length() - 1);
