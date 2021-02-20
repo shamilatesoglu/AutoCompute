@@ -9,7 +9,6 @@ public class InterpreterTest {
 
         String source = FileUtils.readString("grammar/yks.txt");
 
-        Unnamed instance = new Unnamed();
-        instance.execute(source);
+        Unnamed.executeAll(source);
     }
 }

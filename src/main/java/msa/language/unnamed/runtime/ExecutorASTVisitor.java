@@ -10,7 +10,7 @@ import msa.language.unnamed.semantics.SymbolTable;
 
 import java.util.*;
 
-public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
+public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Void> {
 
     private final Map<String, Double> evaluated;
     private final Map<String, Double> inferred;
@@ -19,6 +19,8 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
 
     private final DependencyGraph dependencyGraph;
     private final SymbolTable symbolTable;
+
+    // TODO: Make use of entity properties.
 
     public ExecutorASTVisitor(DependencyGraph dependencyGraph, SymbolTable symbolTable) {
         this.dependencyGraph = dependencyGraph;
@@ -89,6 +91,7 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
                     filtered.put(reference, new Pair<>(evaluated.get(reference), constraint.getRationale()));
                     evaluated.remove(reference);
                     inferred.remove(reference);
+                    break;
                 }
             } catch (DependencyNotFoundException e) {
                 unableToEvaluate.add(reference);
@@ -96,8 +99,31 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
         }
     }
 
+    public Map<String, Double> getInferred() {
+        return inferred;
+    }
+
+    public Set<String> getUnableToEvaluate() {
+        return unableToEvaluate;
+    }
+
+    public Map<String, Pair<Double, String>> getFiltered() {
+        return filtered;
+    }
+
+    private Map<String, Object> constructEntityProperties(EntityBodyASTNode body) {
+
+        Map<String, Object> properties = new LinkedHashMap<>();
+
+        for (PropertyASTNode property : body.getProperties()) {
+            properties.put(property.getId(), property.getValue());
+        }
+
+        return properties;
+    }
+
     @Override
-    public Double visit(CompilationUnitASTNode node) {
+    public Void visit(CompilationUnitASTNode node) {
 
         setGlobalScope(new StaticScope(null, null));
         setCurrentScope(getGlobalScope());
@@ -118,7 +144,7 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
     }
 
     @Override
-    public Double visit(InputDefinitionASTNode node) {
+    public Void visit(InputDefinitionASTNode node) {
         String reference = getFullReference(node.getReference().getReferencedId());
 
         evaluated.put(reference, evaluateExpression(node.getExpression()));
@@ -128,7 +154,7 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
 
 
     @Override
-    public Double visit(VariableDefinitionASTNode node) {
+    public Void visit(VariableDefinitionASTNode node) {
         String reference = getFullReference(node.getId());
 
         ExpressionASTNode expression = node.getExpressionASTNode();
@@ -142,7 +168,7 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
     }
 
     @Override
-    public Double visit(OutputDefinitionASTNode node) {
+    public Void visit(OutputDefinitionASTNode node) {
         String reference = getFullReference(node.getId());
 
         ExpressionASTNode expression = node.getExpressionASTNode();
@@ -153,10 +179,5 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Double> {
         }
 
         return null;
-    }
-
-    @Override
-    public Double visit(ConstraintASTNode node) {
-        return visit(node.getExpression());
     }
 }

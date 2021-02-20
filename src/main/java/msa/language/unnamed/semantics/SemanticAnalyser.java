@@ -108,7 +108,6 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
         return null;
     }
 
-
     public SymbolTable getSymbolTable() {
         return symbolTable;
     }

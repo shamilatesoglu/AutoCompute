@@ -9,7 +9,7 @@
           <option name="outputDir" value="D:\Library\Repos\Unnamed\src\main\java" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
-          <option name="pkg" value="msa.language.unnamed.lang.cst" />
+          <option name="pkg" value="msa.language.unnamed.cst" />
           <option name="language" value="" />
           <option name="generateVisitor" value="true" />
         </PerGrammarGenerationSettings>
