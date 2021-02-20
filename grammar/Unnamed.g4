@@ -13,6 +13,7 @@ entityBody
     : (propertyDefinition)* (constraintsDefinition)* (inputDeclaration)* (localVariableDefinition)* (entityDefinition)* (outputDefinition)*
     ;
 
+// TODO: Interpreter output format doesn't currently make use of this.
 propertyDefinition
     : identifier=ID COLON value=(STRING_LITERAL|NUM) DOT
     ;

@@ -1,14 +1,17 @@
 package msa.language.unnamed.ds;
 
 
+import msa.language.unnamed.algorithm.TarjanStrongConnectivityInspector;
+
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DirectedGraph<V> implements Graph<V> {
 
-    protected Map<V, LinkedHashSet<V>> adj;
+    protected Map<V, Set<V>> adj;
 
     protected V origin;
+
+    private final TarjanStrongConnectivityInspector<V> strongConnectivityInspector;
 
     public DirectedGraph() {
         this(null);
@@ -17,105 +20,22 @@ public class DirectedGraph<V> implements Graph<V> {
     public DirectedGraph(V origin) {
         adj = new LinkedHashMap<>();
         addVertex(origin);
+
+        strongConnectivityInspector = new TarjanStrongConnectivityInspector<>();
     }
 
-    /**
-     * Returns sets of vertices that are strongly connected.
-     * If any set contains more than 1 element, the graph is cyclic.
-     * <p>
-     * See: https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
-     *
-     * @return Sets of vertices that are strongly connected.
-     */
-    public List<Set<V>> getStronglyConnectedComponents() {
-        List<Set<V>> stronglyConnectedComponents = new ArrayList<>();
-
-        AtomicInteger index = new AtomicInteger();
-
-        Stack<TarjanVertexWrapper<V>> S = new Stack<>();
-
-        List<TarjanVertexWrapper<V>> vertices = new ArrayList<>();
+    public Set<V> getRoots() {
+        Set<V> roots = new LinkedHashSet<>();
         for (V vertex : adj.keySet()) {
-            vertices.add(new TarjanVertexWrapper<>(vertex));
-
-        }
-
-        List<Edge<V>> edges = new LinkedList<>();
-
-        for (TarjanVertexWrapper<V> v : vertices) {
-            for (TarjanVertexWrapper<V> w : vertices) {
-                if (isAdjacent(v.v, w.v)) edges.add(new Edge<>(v, w));
+            if (inDegree(vertex) == 0) {
+                roots.add(vertex);
             }
         }
-
-        for (TarjanVertexWrapper<V> vertex : vertices) {
-            if (vertex.index == TarjanVertexWrapper.UNDEFINED) {
-                strongConnect(vertex, index, edges, S, stronglyConnectedComponents);
-            }
-        }
-
-        return stronglyConnectedComponents;
-    }
-
-    private void strongConnect(TarjanVertexWrapper<V> v, AtomicInteger index, List<Edge<V>> edges,
-                               Stack<TarjanVertexWrapper<V>> S, List<Set<V>> stronglyConnectedComponents) {
-        v.index = index.get();
-        v.lowLink = index.getAndIncrement();
-        S.push(v);
-        v.onStack = true;
-
-        for (Edge<V> edge : edges) {
-            if (edge.w.index == TarjanVertexWrapper.UNDEFINED) {
-                // Successor w has not yet been visited; recurse on it
-                strongConnect(edge.w, index, edges, S, stronglyConnectedComponents);
-                edge.v.lowLink = Math.min(edge.v.lowLink, edge.w.lowLink);
-            } else if (edge.w.onStack) {
-                // Successor w is in stack S and hence in the current SCC
-                // If w is not on stack, then (v, w) is an edge pointing to an SCC already found and must be ignored
-                // Note: The next line may look odd - but is correct.
-                // It says w.index not w.lowLink; that is deliberate and from the original paper
-                edge.v.lowLink = Math.min(edge.v.lowLink, edge.w.index);
-            }
-        }
-
-        if (v.lowLink == v.index) {
-            Set<V> stronglyConnectedComponent = new LinkedHashSet<>();
-            TarjanVertexWrapper<V> w;
-            do {
-                w = S.pop();
-                w.onStack = false;
-                stronglyConnectedComponent.add(w.v);
-            } while (!w.v.equals(v.v));
-            stronglyConnectedComponents.add(stronglyConnectedComponent);
-        }
-    }
-
-    private static class TarjanVertexWrapper<V> {
-        private static final int UNDEFINED = -1;
-
-        final V v;
-        int lowLink;
-        int index;
-        boolean onStack;
-
-        TarjanVertexWrapper(V vertex) {
-            this.v = vertex;
-            index = UNDEFINED;
-        }
-    }
-
-    private static class Edge<V> {
-        TarjanVertexWrapper<V> v;
-        TarjanVertexWrapper<V> w;
-
-        public Edge(TarjanVertexWrapper<V> v, TarjanVertexWrapper<V> w) {
-            this.v = v;
-            this.w = w;
-        }
+        return roots;
     }
 
     public boolean isCyclic() {
-        List<Set<V>> stronglyConnectedComponents = getStronglyConnectedComponents();
+        Set<Set<V>> stronglyConnectedComponents = strongConnectivityInspector.getStronglyConnectedComponents();
         for (Set<V> scc : stronglyConnectedComponents) {
             if (scc.size() > 1)
                 return true;
@@ -130,6 +50,7 @@ public class DirectedGraph<V> implements Graph<V> {
         if (adj.containsKey(v)) return;
         if (origin == null) origin = v;
         adj.put(v, new LinkedHashSet<>());
+        strongConnectivityInspector.addVertex(v);
     }
 
     @Override
@@ -137,6 +58,7 @@ public class DirectedGraph<V> implements Graph<V> {
         if (!adj.containsKey(from)) addVertex(from);
         if (!adj.containsKey(to)) addVertex(to);
         adj.get(from).add(to);
+        strongConnectivityInspector.addEdge(from, to);
     }
 
     @Override

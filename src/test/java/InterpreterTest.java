@@ -4,8 +4,9 @@ import msa.language.unnamed.utils.ExecutionTimer;
 import msa.language.unnamed.utils.FileUtils;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,6 @@ public class InterpreterTest {
 
     @Test
     public void testSpeed() {
-
-
         String source = FileUtils.readString("grammar/yks.txt");
 
         int i = 30;
