@@ -5,12 +5,10 @@ import msa.language.unnamed.ast.node.*;
 import msa.language.unnamed.cst.UnnamedParser;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeVisitor<T> {
-    private StaticScope currentScope;
-    private StaticScope globalScope;
+    private Scope currentScope;
+    private Scope globalScope;
 
     public ScopeAwareASTVisitor() {
 
@@ -32,7 +30,7 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
         return scopeOperator;
     }
 
-    public String getFullReference(String id, StaticScope scope) {
+    public String getFullReference(String id, Scope scope) {
         String scopeOperator = getScopeOperator();
         String currentScopeName = scope.getReference();
 
@@ -51,33 +49,37 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
         return scopes.length > 1 ? String.join(scopeOperator, Arrays.copyOfRange(scopes, 0, scopes.length - 1)) : null;
     }
 
-    public StaticScope getCurrentScope() {
+    public Scope getCurrentScope() {
         return currentScope;
     }
 
-    public void setCurrentScope(StaticScope currentScope) {
-        this.currentScope = currentScope;
+    public void enterScope(Scope newScope) {
+        this.currentScope = newScope;
     }
 
-    public StaticScope getGlobalScope() {
+    public void exitScope(Scope newScope) {
+        this.currentScope = newScope;
+    }
+
+    public Scope getGlobalScope() {
         return globalScope;
     }
 
-    public void setGlobalScope(StaticScope globalScope) {
+    public void setGlobalScope(Scope globalScope) {
         this.globalScope = globalScope;
     }
 
     @Override
     public T visit(CompilationUnitASTNode node) {
 
-        setGlobalScope(new StaticScope(null, null));
-        setCurrentScope(getGlobalScope());
+        setGlobalScope(new Scope( null, null));
+        enterScope(getGlobalScope());
 
         for (EntityASTNode entity : node.getEntities()) {
             visit(entity);
         }
 
-        setCurrentScope(getGlobalScope());
+        enterScope(getGlobalScope());
 
         for (ComputeCallASTNode computeCall : node.getComputeCalls()) {
             visit(computeCall);
@@ -92,11 +94,13 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
 
         String reference = node.getReference().getReferencedId();
 
-        setCurrentScope(new StaticScope(reference, getCurrentScope()));
+        enterScope(new Scope(reference, getCurrentScope()));
 
         for (InputDefinitionASTNode inputDefinitionASTNode : node.getInputs()) {
             visit(inputDefinitionASTNode);
         }
+
+        exitScope(getCurrentScope().getEnclosingScope());
 
         return null;
     }
@@ -134,7 +138,7 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
         String name = node.getId();
 
         String reference = getFullReference(name);
-        setCurrentScope(new StaticScope(reference, getCurrentScope()));
+        enterScope(new Scope(reference, getCurrentScope()));
 
         return visit(node.getBlockASTNode());
     }
@@ -166,7 +170,7 @@ public abstract class ScopeAwareASTVisitor<T> extends UnnamedAbstractSyntaxTreeV
             visit(output);
         }
 
-        setCurrentScope(getCurrentScope().getEnclosingScope());
+        exitScope(getCurrentScope().getEnclosingScope());
 
         return null;
     }

@@ -2,6 +2,7 @@ package msa.language.unnamed.runtime;
 
 import msa.language.unnamed.ast.node.CompilationUnitASTNode;
 import msa.language.unnamed.ds.Pair;
+import msa.language.unnamed.semantics.ScopeGraph;
 import msa.language.unnamed.semantics.SymbolTable;
 
 import java.io.FileDescriptor;
@@ -13,14 +14,15 @@ import java.util.Map;
 public class UnnamedInterpreter {
 
     private final DependencyGraph dependencyGraph;
-
     private final SymbolTable symbolTable;
+    private final ScopeGraph scopeGraph;
 
     private final PrintStream out;
 
-    public UnnamedInterpreter(SymbolTable symbolTable) {
+    public UnnamedInterpreter(SymbolTable symbolTable, ScopeGraph scopeGraph) {
         this.symbolTable = symbolTable;
         this.dependencyGraph = new DependencyGraph();
+        this.scopeGraph = scopeGraph;
         try {
             this.out = new PrintStream(new FileOutputStream(FileDescriptor.out), true, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -28,9 +30,10 @@ public class UnnamedInterpreter {
         }
     }
 
-    public UnnamedInterpreter(SymbolTable symbolTable, PrintStream out) {
+    public UnnamedInterpreter(SymbolTable symbolTable, ScopeGraph scopeGraph, PrintStream out) {
         this.symbolTable = symbolTable;
         this.dependencyGraph = new DependencyGraph();
+        this.scopeGraph = scopeGraph;
         this.out = out;
     }
 
@@ -38,7 +41,7 @@ public class UnnamedInterpreter {
         DependencyResolvingASTVisitor dependencyResolvingASTVisitor = new DependencyResolvingASTVisitor(dependencyGraph, symbolTable);
         dependencyResolvingASTVisitor.visit(root);
 
-        ExecutorASTVisitor executor = new ExecutorASTVisitor(dependencyGraph, symbolTable);
+        ExecutorASTVisitor executor = new ExecutorASTVisitor(dependencyGraph, symbolTable, scopeGraph);
         executor.visit(root);
 
         printResults(executor.getInferred(), executor.getFiltered());

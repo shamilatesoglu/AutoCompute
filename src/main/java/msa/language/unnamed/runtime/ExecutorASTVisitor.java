@@ -3,10 +3,7 @@ package msa.language.unnamed.runtime;
 import msa.language.unnamed.ast.node.*;
 import msa.language.unnamed.ds.Pair;
 import msa.language.unnamed.runtime.exceptions.DependencyNotFoundException;
-import msa.language.unnamed.semantics.ScopeAwareASTVisitor;
-import msa.language.unnamed.semantics.StaticScope;
-import msa.language.unnamed.semantics.Symbol;
-import msa.language.unnamed.semantics.SymbolTable;
+import msa.language.unnamed.semantics.*;
 
 import java.util.*;
 
@@ -19,12 +16,14 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Void> {
 
     private final DependencyGraph dependencyGraph;
     private final SymbolTable symbolTable;
+    private final ScopeGraph scopeGraph;
 
     // TODO: Make use of entity properties.
 
-    public ExecutorASTVisitor(DependencyGraph dependencyGraph, SymbolTable symbolTable) {
+    public ExecutorASTVisitor(DependencyGraph dependencyGraph, SymbolTable symbolTable, ScopeGraph scopeGraph) {
         this.dependencyGraph = dependencyGraph;
         this.symbolTable = symbolTable;
+        this.scopeGraph = scopeGraph;
         this.evaluated = new LinkedHashMap<>();
         this.unableToEvaluate = new LinkedHashSet<>();
         this.filtered = new LinkedHashMap<>();
@@ -45,7 +44,7 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Void> {
 
     private Double evaluateExpression(ExpressionASTNode expression) {
         ExpressionEvaluatingASTVisitor evaluator = new ExpressionEvaluatingASTVisitor(evaluated);
-        evaluator.setCurrentScope(getCurrentScope());
+        evaluator.enterScope(getCurrentScope());
         evaluator.setGlobalScope(getGlobalScope());
         Double result = evaluator.visit(expression);
         return result;
@@ -59,7 +58,8 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Void> {
             if (symbolTable.contains(constraintSetRef)) {
                 constraintSetSymbol = symbolTable.lookup(constraintSetRef);
             } else {
-                StaticScope scope = getCurrentScope();
+                enterScope(scopeGraph.get(getParent(reference)));
+                Scope scope = getCurrentScope();
                 while (scope != null) {
                     if (scope.getReference() == null) break;
                     Symbol entitySymbol = symbolTable.lookup(scope.getReference());
@@ -111,36 +111,52 @@ public class ExecutorASTVisitor extends ScopeAwareASTVisitor<Void> {
         return filtered;
     }
 
-    private Map<String, Object> constructEntityProperties(EntityBodyASTNode body) {
-
-        Map<String, Object> properties = new LinkedHashMap<>();
-
-        for (PropertyASTNode property : body.getProperties()) {
-            properties.put(property.getId(), property.getValue());
-        }
-
-        return properties;
-    }
 
     @Override
     public Void visit(CompilationUnitASTNode node) {
 
-        setGlobalScope(new StaticScope(null, null));
-        setCurrentScope(getGlobalScope());
+        setGlobalScope(new Scope(null, null));
+        enterScope(getGlobalScope());
 
         for (ComputeCallASTNode computeCall : node.getComputeCalls()) {
             visit(computeCall);
         }
 
-        setCurrentScope(getGlobalScope());
+        enterScope(getGlobalScope());
 
-        for (EntityASTNode entity : node.getEntities()) {
-            visit(entity);
-        }
-
-        setCurrentScope(getGlobalScope());
+        computeAll();
 
         return null;
+    }
+
+    private void computeAll() {
+        LinkedList<String> dependantQueue = new LinkedList<>(evaluated.keySet());
+
+        while (!dependantQueue.isEmpty()) {
+            String id = dependantQueue.poll();
+            Set<String> dependants = dependencyGraph.getImmediateDependants(id);
+
+            if (dependants == null) continue;
+
+            for (String dependant : dependants) {
+                if (!evaluated.containsKey(dependant)) {
+                    Symbol outputSymbol = symbolTable.lookup(dependant);
+                    String reference = outputSymbol.getName();
+                    VariableDefinitionASTNode output = (VariableDefinitionASTNode) outputSymbol.getDeclaringASTNode();
+
+                    String scopeReference = getParent(reference);
+                    enterScope(scopeGraph.get(scopeReference));
+
+                    GivenASTNode given = output.getGivenASTNode();
+                    ExpressionASTNode expression = output.getExpressionASTNode();
+
+                    if (evaluateExpressionAndStore(reference, expression)) {
+                        evaluateConstraints(reference, given);
+                        dependantQueue.addLast(dependant);
+                    }
+                }
+            }
+        }
     }
 
     @Override

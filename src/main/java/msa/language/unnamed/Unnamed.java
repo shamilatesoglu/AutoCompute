@@ -39,7 +39,7 @@ public class Unnamed implements Callable<Integer> {
         int exitCode = new CommandLine(new Unnamed()).execute(args);
         System.exit(exitCode);
     }
-    
+
     public Unnamed() {
     }
 
@@ -61,7 +61,7 @@ public class Unnamed implements Callable<Integer> {
         semanticAnalyser.visit(root);
 
         // Interpretation
-        UnnamedInterpreter interpreter = new UnnamedInterpreter(semanticAnalyser.getSymbolTable(), out);
+        UnnamedInterpreter interpreter = new UnnamedInterpreter(semanticAnalyser.getSymbolTable(), semanticAnalyser.getScopeGraph(), out);
         interpreter.interpret(root);
     }
 

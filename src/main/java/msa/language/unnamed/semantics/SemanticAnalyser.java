@@ -11,6 +11,8 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
 
     private final SymbolTable symbolTable;
 
+    private final ScopeGraph scopeGraph;
+
     private final Queue<String> referencesMade;
 
     /**
@@ -18,6 +20,7 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
      */
     public SemanticAnalyser() {
         symbolTable = new SymbolTable();
+        scopeGraph = new ScopeGraph();
         referencesMade = new ArrayDeque<>();
     }
 
@@ -31,6 +34,13 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
         } else {
             symbolTable.insert(symbol);
         }
+    }
+
+    @Override
+    public void enterScope(Scope nestedScope) {
+        Scope parentScope = getCurrentScope();
+        super.enterScope(nestedScope);
+        scopeGraph.addScope(parentScope, nestedScope);
     }
 
     @Override
@@ -110,5 +120,9 @@ public class SemanticAnalyser extends ScopeAwareASTVisitor<Void> {
 
     public SymbolTable getSymbolTable() {
         return symbolTable;
+    }
+
+    public ScopeGraph getScopeGraph() {
+        return scopeGraph;
     }
 }
