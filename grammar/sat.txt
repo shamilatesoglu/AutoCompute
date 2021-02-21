@@ -1,0 +1,44 @@
+entity sat {
+    entity evidence_based_reading_and_writing {
+        entity reading {
+            in correct[0..52].
+            in wrong[0..52].
+
+            out reading_raw := correct given { correct + wrong <= 52. }.
+        }
+
+        entity writing {
+            in correct[0..44].
+            in wrong[0..44].
+
+            out writing_raw := correct given { correct + wrong <= 44. }.
+        }
+    }
+
+    entity math {
+        entity no_calculator {
+            in correct[0..20].
+            in wrong[0..20].
+
+            out math_no_calculator_raw := correct given { correct + wrong <= 20. }.
+        }
+
+        entity calculator {
+            in correct[0..38].
+            in wrong[0..38].
+
+            out math_calculator_raw := correct given { correct + wrong <= 38. }.
+        }
+    }
+}
+
+compute sat {
+    evidence_based_reading_and_writing::reading::correct << 50.
+    evidence_based_reading_and_writing::reading::wrong << 2.
+    evidence_based_reading_and_writing::writing::correct << 40.
+    evidence_based_reading_and_writing::writing::wrong << 3.
+    math::no_calculator::correct << 20.
+    math::no_calculator::wrong << 0.
+    math::calculator::correct << 34.
+    math::calculator::wrong << 4.
+}.
