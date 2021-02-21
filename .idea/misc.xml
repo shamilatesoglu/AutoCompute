@@ -16,7 +16,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/grammar/AutoCompute.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="D:\Library\Repos\Unnamed\src\main\java" />
+          <option name="outputDir" value="D:\Library\Repos\AutoCompute\src\main\java" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="msa.lang.autocompute.cst" />
