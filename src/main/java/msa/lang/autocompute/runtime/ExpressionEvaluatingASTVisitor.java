@@ -32,6 +32,8 @@ public class ExpressionEvaluatingASTVisitor extends ScopeAwareASTVisitor<Double>
                 return visit(node.getLeft()) * visit(node.getRight());
             case AutoComputeLexer.OPERATOR_DIV:
                 return visit(node.getLeft()) / visit(node.getRight());
+            case AutoComputeLexer.OPERATOR_EXP:
+                return Math.pow(visit(node.getLeft()), visit(node.getRight()));
             case AutoComputeLexer.OPERATOR_AND:
                 return (visit(node.getLeft()) == 1.0) && (visit(node.getRight()) == 1.0) ? 1.0 : 0.0;
             case AutoComputeLexer.OPERATOR_OR:

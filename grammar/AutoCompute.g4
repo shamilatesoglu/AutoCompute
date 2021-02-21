@@ -62,6 +62,7 @@ reference
 expression
     :   '(' expression ')'                                                                      # parenthesisExpression
     |   operation=('+'|'-') expression                                                          # unaryExpression
+    |   left=expression operation='^' right=expression                                          # infixExpression
     |   left=expression operation=('*'|'/') right=expression                                    # infixExpression
     |   left=expression operation=('+'|'-') right=expression                                    # infixExpression
     |   left=expression operation=('=='|'!='|'>'|'<'|'>='|'<=') right=expression                # infixExpression
@@ -114,6 +115,7 @@ OPERATOR_GTEQ: '>=';
 OPERATOR_LTEQ: '<=';
 OPERATOR_SCOPE: '::';
 OPERATOR_IN   : '<<';
+OPERATOR_EXP   : '^';
 
 NUM :   [0-9]+ ('.' [0-9]+)? ([eE] [+-]? [0-9]+)?;
 ID  :   [a-zA-Z_0-9]+;

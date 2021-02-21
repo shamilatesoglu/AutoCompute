@@ -8,30 +8,30 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class DependencyGraph {
-    private final DirectedAcyclicGraph<String> graph;
-    private final DirectedAcyclicGraph<String> reversed;
+    private final DirectedAcyclicGraph<String> dependants;
+    private final DirectedAcyclicGraph<String> dependencies;
 
 
     public DependencyGraph() {
-        this.graph = new DirectedAcyclicGraph<>();
-        this.reversed = new DirectedAcyclicGraph<>();
+        this.dependants = new DirectedAcyclicGraph<>();
+        this.dependencies = new DirectedAcyclicGraph<>();
     }
 
     public void add(String id) {
-        graph.addVertex(id);
+        dependants.addVertex(id);
     }
 
     public void addDependency(String dependant, String dependency) {
-        graph.addEdge(dependency, dependant); // dependency -> dependant: Represents the flow of data
-        reversed.addEdge(dependant, dependency); // dependant -> dependency: Represents the hierarchy
+        dependants.addEdge(dependency, dependant); // dependency -> dependant: Represents the flow of data
+        dependencies.addEdge(dependant, dependency); // dependant -> dependency: Represents the hierarchy
     }
 
     public Set<String> getImmediateDependencies(String dependant) {
-        return reversed.getAdjacencySet(dependant);
+        return dependencies.getAdjacencySet(dependant);
     }
 
     public Set<String> getImmediateDependants(String dependency) {
-        return graph.getAdjacencySet(dependency);
+        return dependants.getAdjacencySet(dependency);
     }
 
     public Set<String> getAllDependants(String dependency) {
@@ -57,7 +57,7 @@ public class DependencyGraph {
     }
 
     public Set<String> getAllUltimateDependants() {
-        return graph.getSinkVertices();
+        return dependants.getSinkVertices();
     }
 
     public Set<String> getUltimateDependants(String dependency) {
