@@ -2,7 +2,6 @@ package msa.lang.unnamed.runtime;
 
 import msa.lang.unnamed.ast.node.*;
 import msa.lang.unnamed.cst.UnnamedLexer;
-import msa.language.unnamed.ast.node.*;
 import msa.lang.unnamed.runtime.exceptions.DependencyNotFoundException;
 import msa.lang.unnamed.semantics.ScopeAwareASTVisitor;
 

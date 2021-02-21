@@ -82,9 +82,9 @@ OPERATOR_SCOPE
 OPERATOR_IN
 NUM
 ID
-WS
 COMMENT
 LINE_COMMENT
+WS
 
 rule names:
 compilationUnit

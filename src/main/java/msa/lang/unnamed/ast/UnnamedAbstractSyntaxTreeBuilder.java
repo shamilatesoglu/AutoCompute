@@ -1,7 +1,6 @@
 package msa.lang.unnamed.ast;
 
 import msa.lang.unnamed.ast.node.*;
-import msa.language.unnamed.ast.node.*;
 import msa.lang.unnamed.cst.UnnamedBaseVisitor;
 import msa.lang.unnamed.cst.UnnamedLexer;
 import msa.lang.unnamed.cst.UnnamedParser;

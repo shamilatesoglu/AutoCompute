@@ -1,7 +1,6 @@
 package msa.lang.unnamed.ast;
 
 import msa.lang.unnamed.ast.node.*;
-import msa.language.unnamed.ast.node.*;
 
 public abstract class UnnamedAbstractSyntaxTreeVisitor<T> {
     public abstract T visit(CompilationUnitASTNode node);

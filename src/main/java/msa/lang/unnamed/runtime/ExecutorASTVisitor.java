@@ -3,9 +3,7 @@ package msa.lang.unnamed.runtime;
 import msa.lang.unnamed.ast.node.*;
 import msa.lang.unnamed.ds.Pair;
 import msa.lang.unnamed.semantics.*;
-import msa.language.unnamed.ast.node.*;
 import msa.lang.unnamed.runtime.exceptions.DependencyNotFoundException;
-import msa.language.unnamed.semantics.*;
 
 import java.util.*;
 

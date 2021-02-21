@@ -1,7 +1,6 @@
 package msa.lang.unnamed.semantics;
 
 import msa.lang.unnamed.ast.node.*;
-import msa.language.unnamed.ast.node.*;
 import msa.lang.unnamed.semantics.exceptions.AlreadyDefinedException;
 import msa.lang.unnamed.semantics.exceptions.UndefinedSymbolException;
 

@@ -1,7 +1,6 @@
 package msa.lang.unnamed.runtime;
 
 import msa.lang.unnamed.ast.node.*;
-import msa.language.unnamed.ast.node.*;
 import msa.lang.unnamed.semantics.ScopeAwareASTVisitor;
 import msa.lang.unnamed.semantics.SymbolTable;
 
@@ -11,9 +10,7 @@ public class DependencyResolvingASTVisitor extends ScopeAwareASTVisitor<Void> {
 
     private final SymbolTable symbolTable;
 
-
     private IdentifiableASTNode definingASTNode;
-
 
     public DependencyResolvingASTVisitor(DependencyGraph dependencyGraph, SymbolTable symbolTable) {
         this.dependencyGraph = dependencyGraph;
