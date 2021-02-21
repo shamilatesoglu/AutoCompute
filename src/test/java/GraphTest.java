@@ -1,4 +1,4 @@
-import msa.lang.unnamed.ds.DirectedGraph;
+import msa.lang.autocompute.ds.DirectedGraph;
 import org.junit.jupiter.api.Test;
 
 public class GraphTest {

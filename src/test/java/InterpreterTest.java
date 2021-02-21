@@ -1,7 +1,7 @@
-import msa.lang.unnamed.Unnamed;
-import msa.lang.unnamed.ds.Pair;
-import msa.lang.unnamed.utils.ExecutionTimer;
-import msa.lang.unnamed.utils.FileUtils;
+import msa.lang.autocompute.AutoCompute;
+import msa.lang.autocompute.ds.Pair;
+import msa.lang.autocompute.utils.ExecutionTimer;
+import msa.lang.autocompute.utils.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -17,7 +17,7 @@ public class InterpreterTest {
 
         String source = FileUtils.readString("grammar/yks.ac");
 
-        Unnamed.executeAll(source);
+        AutoCompute.executeAll(source);
 
 
     }
@@ -61,7 +61,7 @@ public class InterpreterTest {
 
     private void execute(String source) throws UnsupportedEncodingException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        Unnamed.executeAll(source, new PrintStream(outputStream, true, "UTF-8"));
+        AutoCompute.executeAll(source, new PrintStream(outputStream, true, "UTF-8"));
         String result = outputStream.toString("utf-8");
 
         List<Pair<String, Object>> results = new ArrayList<>();
