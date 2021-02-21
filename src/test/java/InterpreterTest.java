@@ -15,7 +15,7 @@ public class InterpreterTest {
     public void testParseTree() throws UnsupportedEncodingException {
 
 
-        String source = FileUtils.readString("grammar/yks.txt");
+        String source = FileUtils.readString("grammar/yks.ac");
 
         Unnamed.executeAll(source);
 
@@ -24,7 +24,7 @@ public class InterpreterTest {
 
     @Test
     public void testSpeed() {
-        String source = FileUtils.readString("grammar/yks.txt");
+        String source = FileUtils.readString("grammar/yks.ac");
 
         int i = 30;
         while (i-- > 0) {

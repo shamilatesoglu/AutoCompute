@@ -127,7 +127,8 @@ compute yks {
     tyt::matematik::yanlis   << 1.
     tyt::sosyal::dogru       << 15.
     tyt::sosyal::yanlis      << 3.
-    tyt::fen::dogru          << 190.
+    tyt::fen::dogru          << 19.
     tyt::fen::yanlis         << 0.
-    diploma_notu             << 83.35.
+    diploma_notu             << 830.35.
+    daha_once_yerlesti       << false.
  }.

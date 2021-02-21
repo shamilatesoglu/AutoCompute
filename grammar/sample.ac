@@ -1,0 +1,21 @@
+
+entity sample {
+    /* Input declarations for this system of computation named "sample" */
+    in x.
+    in y.
+    in z.
+
+    /* Intermediate variable */
+    v := y * 2.
+
+    /* Output definitions */
+    out a := x + v.
+    out b := z * 10.0.
+    out c := x * 3 + z * 10.
+}
+
+/* Compute call for the entity "sample". This will output what can be inferred from those inputs. */
+compute sample {
+    x << 5.
+    y << 10.
+}.
