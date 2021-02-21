@@ -1,8 +1,5 @@
-import msa.language.unnamed.ds.DirectedGraph;
+import msa.lang.unnamed.ds.DirectedGraph;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Set;
 
 public class GraphTest {
 

@@ -1,7 +1,7 @@
-import msa.language.unnamed.Unnamed;
-import msa.language.unnamed.ds.Pair;
-import msa.language.unnamed.utils.ExecutionTimer;
-import msa.language.unnamed.utils.FileUtils;
+import msa.lang.unnamed.Unnamed;
+import msa.lang.unnamed.ds.Pair;
+import msa.lang.unnamed.utils.ExecutionTimer;
+import msa.lang.unnamed.utils.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
