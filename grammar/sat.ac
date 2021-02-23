@@ -13,6 +13,8 @@ entity sat {
 
             out writing_raw := correct given { correct + wrong <= 44. }.
         }
+
+        // TODO: Include calculation of scaled scores.
     }
 
     entity math {
@@ -29,6 +31,8 @@ entity sat {
 
             out math_calculator_raw := correct given { correct + wrong <= 38. }.
         }
+
+        // TODO: Include calculation of scaled scores.
     }
 }
 

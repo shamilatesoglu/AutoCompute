@@ -58,7 +58,7 @@ sample::c = NaN, "The variable z must be greater than 5".
 ```
 giving the reason. 
 
-If too many calculations are the same set of constraints, they can be defined only once, before the inputs, using `constraints` keyword:
+If too many calculations depends on the same set of constraints, they can be defined only once, before the inputs, using `constraints` keyword:
 ```
 constraints z_constraint { 
     z > 5, "The variable z must be greater than 5". 
@@ -68,11 +68,14 @@ out c := x * 3 + z * 10 given z_constraint.
 ```
 This will create a scope that will be dynamically binded to the scope of the output computation, so the name `z` will be resolved dynamically depending on the context.
 
+#### Types
+Variables inside an `entity` are internally represented by floating-point numbers. In the language side however, there are only 2 types, boolean and numeric. There's no type declaration for these two types, they are inferred during abstract syntax tree construction. Boolean types are interpreted as either 0s or 1s.
+
 ### Grammar
 [The grammar](grammar/AutoCompute.g4), as well as lexer and parser are constructed using [ANTLR](https://www.antlr.org/).
 
-### Use cases
-I'm not entirely sure which other problems can this be used to solve efficiently, but I needed this kind of system of dynamic computation involving dependency relations for my mobile application for standardized test score tracking. The application aims to provide assistance to the students preparing for university entrance exam (YKS) in Turkey, but because the exam system regularly changes once in a few years, I needed a system in which I could substitute those changes without invasive code changes involving thousands of lines of code. This need, although could be done easily with a simple JSON schema rather than a DSL with a working interpreter, fused with my desire to learn the practice of programming language implementation by actually creating one.
+## Use cases
+I'm not entirely sure which other problems can this be used to solve efficiently, but I needed this kind of system of dynamic computation involving dependency relations for my mobile application for standardized test score tracking. The application aims to provide assistance to the students preparing for university entrance exam (YKS) in Turkey, but because the exam system regularly changes once in a few years, I needed a system in which I could substitute those changes without invasive code changes involving thousands of lines of code. This need -although could be solved very easily with a simple JSON schema rather than a DSL with a working interpreter- fused with my desire to learn and see some concepts in the practice of programming language implementation by actually creating one.
 
 To be more concrete, here is the dependency graph of the score types in university entrance exam in Turkey:
 
