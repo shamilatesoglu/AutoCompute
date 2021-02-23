@@ -241,13 +241,17 @@ You can either use the [JAR file](dist/AutoCompute.jar), and execute the followi
 ```
 java -jar AutoCompute.jar sample.ac
 ```
-with `sample.ac` being the script file, or you can include the runtime as a dependency in your gradle project:
+with `sample.ac` being the script file, or you can add the runtime as a dependency in your gradle project:
 ```
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
-    implementation 'com.github.shamilatesoglu:AutoCompute:1.0.0'
+    implementation 'com.github.shamilatesoglu:AutoCompute:v1.0.0'
 }
 ```
-although I haven't tested the latter.
+and use the `AutoCompute.executeAll` method.
 
 ## License
 
