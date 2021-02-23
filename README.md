@@ -236,6 +236,19 @@ yks::tyt_ham = 427.500000.
 yks::tyt_yerlestirme = 477.510000.
 ```
 
-### License
+## Usage
+You can either use the [JAR file](dist/AutoCompute.jar), and execute the following in command line:
+```
+java -jar AutoCompute.jar sample.ac
+```
+with `sample.ac` being the script file, or you can include the runtime as a dependency in your gradle project:
+```
+dependencies {
+    implementation 'com.github.shamilatesoglu:AutoCompute:1.0.0'
+}
+```
+although I haven't tested the latter.
+
+## License
 
 [MIT License](/LICENSE)
