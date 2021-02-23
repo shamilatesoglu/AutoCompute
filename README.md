@@ -1,6 +1,6 @@
 # AutoCompute
 
-A domain-specific language for automatically calculating deducible outputs from given inputs and constraints.
+A tiny domain-specific language for automatically calculating deducible outputs from given inputs and constraints.
 
 Given declarations of inputs and output definitions depending on those inputs or other outputs, supplying values for any arbitrary number of inputs will yield the values of outputs that can be inferred.
 
@@ -35,6 +35,42 @@ This will yield:
 sample::a = 25.000000.
 ```
 Because only output `a` can be computed from those set of input definitions.
+
+### Concepts
+Below are some of the concepts in this tiny language.
+#### Entities
+Any input output system is structured via entities. With `entity` keyword, a named static scope can be defined, in which inputs, intermediate variables, and outputs can be declared and defined. Entities can also be nested.
+
+#### Inputs
+The keyword `in` declares the input that can be fed to that entity during a `compute` call.
+
+#### Outputs and intermediate variables
+The keyword `out` defines the output variable that will be the end goal of computation after a `compute` call. There's no keyword for defining the type of intermediate variables, as every variable is internally represented as floating-point numbers. There's also no separation of declaration and definition, you can only define an intermediate variable, same as outputs.
+
+#### Constraints
+Any number of constraints can be set on the computation of a variable using the keyword `given` after the expression that defines the variable. For example:
+```
+out c := x * 3 + z * 10 given { z > 5, "The variable z must be greater than 5". }.
+```
+If the constraint can't be satisfied during execution, the output will include:
+```
+sample::c = NaN, "The variable z must be greater than 5".
+```
+giving the reason. 
+
+If too many calculations are the same set of constraints, they can be defined only once, before the inputs, using `constraints` keyword:
+```
+constraints z_constraint { 
+    z > 5, "The variable z must be greater than 5". 
+}.
+...
+out c := x * 3 + z * 10 given z_constraint.
+```
+This will create a scope that will be dynamically binded to the scope of the output computation, so the name `z` will be resolved dynamically depending on the context.
+
+### Grammar
+[The grammar](grammar/AutoCompute.g4), as well as lexer and parser are constructed using [ANTLR](https://www.antlr.org/).
+
 ### Use cases
 I'm not entirely sure which other problems can this be used to solve efficiently, but I needed this kind of system of dynamic computation involving dependency relations for my mobile application for standardized test score tracking. The application aims to provide assistance to the students preparing for university entrance exam (YKS) in Turkey, but because the exam system regularly changes once in a few years, I needed a system in which I could substitute those changes without invasive code changes involving thousands of lines of code. This need, although could be done easily with a simple JSON schema rather than a DSL with a working interpreter, fused with my desire to learn the practice of programming language implementation by actually creating one.
 
