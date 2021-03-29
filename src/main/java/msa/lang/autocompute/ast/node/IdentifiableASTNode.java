@@ -19,7 +19,7 @@
 
 package msa.lang.autocompute.ast.node;
 
-public abstract class IdentifiableASTNode extends UnnamedAbstractSyntaxTreeNode {
+public abstract class IdentifiableASTNode extends AutoComputeAbstractSyntaxTreeNode {
     private final String id;
 
     public IdentifiableASTNode(String id) {

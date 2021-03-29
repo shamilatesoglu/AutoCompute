@@ -20,22 +20,22 @@
 package msa.lang.autocompute.ast.node;
 
 public class InfixExpressionASTNode extends ExpressionASTNode {
-    private UnnamedAbstractSyntaxTreeNode left;
-    private UnnamedAbstractSyntaxTreeNode right;
+    private AutoComputeAbstractSyntaxTreeNode left;
+    private AutoComputeAbstractSyntaxTreeNode right;
 
     private int operator;
 
-    public InfixExpressionASTNode(UnnamedAbstractSyntaxTreeNode left, int operator, UnnamedAbstractSyntaxTreeNode right) {
+    public InfixExpressionASTNode(AutoComputeAbstractSyntaxTreeNode left, int operator, AutoComputeAbstractSyntaxTreeNode right) {
         this.left = left;
         this.operator = operator;
         this.right = right;
     }
 
-    public UnnamedAbstractSyntaxTreeNode getLeft() {
+    public AutoComputeAbstractSyntaxTreeNode getLeft() {
         return left;
     }
 
-    public UnnamedAbstractSyntaxTreeNode getRight() {
+    public AutoComputeAbstractSyntaxTreeNode getRight() {
         return right;
     }
 

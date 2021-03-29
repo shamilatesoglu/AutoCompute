@@ -22,7 +22,7 @@ package msa.lang.autocompute.ast.node;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityBodyASTNode extends UnnamedAbstractSyntaxTreeNode {
+public class EntityBodyASTNode extends AutoComputeAbstractSyntaxTreeNode {
 
     private final List<PropertyASTNode> properties;
 

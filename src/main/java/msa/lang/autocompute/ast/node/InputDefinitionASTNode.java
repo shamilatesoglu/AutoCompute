@@ -19,7 +19,7 @@
 
 package msa.lang.autocompute.ast.node;
 
-public class InputDefinitionASTNode extends UnnamedAbstractSyntaxTreeNode {
+public class InputDefinitionASTNode extends AutoComputeAbstractSyntaxTreeNode {
 
     private final ReferencingASTNode reference;
     private final ExpressionASTNode value;

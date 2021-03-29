@@ -56,7 +56,7 @@ public abstract class AutoComputeAbstractSyntaxTreeVisitor<T> {
 
     public abstract T visit(ReferencingASTNode node);
 
-    public T visit(UnnamedAbstractSyntaxTreeNode node) {
+    public T visit(AutoComputeAbstractSyntaxTreeNode node) {
         if (node instanceof CompilationUnitASTNode) {
             return visit((CompilationUnitASTNode) node);
         }

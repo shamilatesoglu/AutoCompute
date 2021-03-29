@@ -22,7 +22,7 @@ package msa.lang.autocompute.ast.node;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComputeCallASTNode extends UnnamedAbstractSyntaxTreeNode {
+public class ComputeCallASTNode extends AutoComputeAbstractSyntaxTreeNode {
     private final ReferencingASTNode reference;
 
     private final List<InputDefinitionASTNode> inputs;

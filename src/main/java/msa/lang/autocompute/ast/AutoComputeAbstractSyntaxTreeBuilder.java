@@ -26,10 +26,10 @@ import msa.lang.autocompute.cst.AutoComputeParser;
 
 import java.util.stream.Collectors;
 
-public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor<UnnamedAbstractSyntaxTreeNode> {
+public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor<AutoComputeAbstractSyntaxTreeNode> {
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitCompilationUnit(AutoComputeParser.CompilationUnitContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitCompilationUnit(AutoComputeParser.CompilationUnitContext ctx) {
         CompilationUnitASTNode node = new CompilationUnitASTNode();
 
         node.getEntities().addAll(ctx.entityDefinition().stream()
@@ -44,13 +44,13 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitEntityDefinition(AutoComputeParser.EntityDefinitionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitEntityDefinition(AutoComputeParser.EntityDefinitionContext ctx) {
         String id = ctx.identifier.getText();
         return new EntityASTNode(id, (EntityBodyASTNode) visitEntityBody(ctx.entityBody()));
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitEntityBody(AutoComputeParser.EntityBodyContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitEntityBody(AutoComputeParser.EntityBodyContext ctx) {
         EntityBodyASTNode node = new EntityBodyASTNode();
 
         node.getProperties().addAll(ctx.propertyDefinition()
@@ -81,12 +81,12 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitInputDeclaration(AutoComputeParser.InputDeclarationContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitInputDeclaration(AutoComputeParser.InputDeclarationContext ctx) {
         return new InputDeclarationASTNode(ctx.identifier.getText());
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitLocalVariableDefinition(AutoComputeParser.LocalVariableDefinitionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitLocalVariableDefinition(AutoComputeParser.LocalVariableDefinitionContext ctx) {
         return new VariableDefinitionASTNode(
                 ctx.identifier.getText(),
                 (ExpressionASTNode) visit(ctx.expression()),
@@ -94,7 +94,7 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitOutputDefinition(AutoComputeParser.OutputDefinitionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitOutputDefinition(AutoComputeParser.OutputDefinitionContext ctx) {
         return new OutputDefinitionASTNode(
                 ctx.identifier.getText(),
                 (ExpressionASTNode) visit(ctx.expression()),
@@ -103,7 +103,7 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitConstraintsDefinition(AutoComputeParser.ConstraintsDefinitionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitConstraintsDefinition(AutoComputeParser.ConstraintsDefinitionContext ctx) {
         ConstraintSetASTNode node = new ConstraintSetASTNode(ctx.identifier.getText());
 
         node.getConstraints().addAll(ctx.constraint().stream()
@@ -114,7 +114,7 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitPropertyDefinition(AutoComputeParser.PropertyDefinitionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitPropertyDefinition(AutoComputeParser.PropertyDefinitionContext ctx) {
         String text = ctx.value.getText();
         Object value;
         if (text.startsWith("\""))
@@ -127,7 +127,7 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitGiven(AutoComputeParser.GivenContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitGiven(AutoComputeParser.GivenContext ctx) {
         GivenASTNode node = new GivenASTNode();
         if (ctx != null) {
             node.getConstraints().addAll(ctx.constraint()
@@ -141,23 +141,23 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitConstraint(AutoComputeParser.ConstraintContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitConstraint(AutoComputeParser.ConstraintContext ctx) {
         return new ConstraintASTNode((ExpressionASTNode) visit(ctx.expression()), ctx.rationale != null ? ctx.rationale.getText() : null);
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitRangeExpression(AutoComputeParser.RangeExpressionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitRangeExpression(AutoComputeParser.RangeExpressionContext ctx) {
         // TODO: This can be done by constraints, but it would be nice to have this I guess.
         return super.visitRangeExpression(ctx);
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitInfixExpression(AutoComputeParser.InfixExpressionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitInfixExpression(AutoComputeParser.InfixExpressionContext ctx) {
         return new InfixExpressionASTNode(visit(ctx.left), ctx.operation.getType(), visit(ctx.right));
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitNumberExpression(AutoComputeParser.NumberExpressionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitNumberExpression(AutoComputeParser.NumberExpressionContext ctx) {
         String text = ctx.value.getText().toLowerCase();
         if (text.equals("true") || text.equals("false")) {
             boolean val = Boolean.parseBoolean(text);
@@ -168,7 +168,7 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitConditionalExpression(AutoComputeParser.ConditionalExpressionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitConditionalExpression(AutoComputeParser.ConditionalExpressionContext ctx) {
 
         return new ConditionalExpressionASTNode(
                 (ExpressionASTNode) visit(ctx.check),
@@ -178,12 +178,12 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitParenthesisExpression(AutoComputeParser.ParenthesisExpressionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitParenthesisExpression(AutoComputeParser.ParenthesisExpressionContext ctx) {
         return visit(ctx.expression());
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitUnaryExpression(AutoComputeParser.UnaryExpressionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitUnaryExpression(AutoComputeParser.UnaryExpressionContext ctx) {
         switch (ctx.operation.getType()) {
             case AutoComputeLexer.OPERATOR_ADD:
                 return visit(ctx.expression());
@@ -197,12 +197,12 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitReferenceExpression(AutoComputeParser.ReferenceExpressionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitReferenceExpression(AutoComputeParser.ReferenceExpressionContext ctx) {
         return new ReferencingASTNode(ctx.reference().getText());
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitComputeCall(AutoComputeParser.ComputeCallContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitComputeCall(AutoComputeParser.ComputeCallContext ctx) {
         ComputeCallASTNode node = new ComputeCallASTNode((ReferencingASTNode) visitReference(ctx.reference()));
         node.getInputs().addAll(ctx.inputDefinition().stream()
                 .map(inputDefinitionContext -> (InputDefinitionASTNode) visitInputDefinition(inputDefinitionContext))
@@ -211,12 +211,12 @@ public class AutoComputeAbstractSyntaxTreeBuilder extends AutoComputeBaseVisitor
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitInputDefinition(AutoComputeParser.InputDefinitionContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitInputDefinition(AutoComputeParser.InputDefinitionContext ctx) {
         return new InputDefinitionASTNode((ReferencingASTNode) visitReference(ctx.reference()), (ExpressionASTNode) visit(ctx.expression()));
     }
 
     @Override
-    public UnnamedAbstractSyntaxTreeNode visitReference(AutoComputeParser.ReferenceContext ctx) {
+    public AutoComputeAbstractSyntaxTreeNode visitReference(AutoComputeParser.ReferenceContext ctx) {
         return new ReferencingASTNode(ctx.getText());
     }
 }
